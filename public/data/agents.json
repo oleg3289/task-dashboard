@@ -1,0 +1,66 @@
+[
+  {
+    "name": "makima",
+    "role": "CEO",
+    "specialization": "orchestration",
+    "currentWorkload": 0,
+    "activeTasks": [],
+    "skills": ["strategy", "coordination", "project-management"]
+  },
+  {
+    "name": "reze",
+    "role": "Planner",
+    "specialization": "planning",
+    "currentWorkload": 0,
+    "activeTasks": [],
+    "skills": ["planning", "organization", "timeline-management"]
+  },
+  {
+    "name": "aki",
+    "role": "Developer",
+    "specialization": "coding",
+    "currentWorkload": 0,
+    "activeTasks": [],
+    "skills": ["coding", "testing", "devops", "nextjs", "typescript"]
+  },
+  {
+    "name": "power",
+    "role": "Designer",
+    "specialization": "design",
+    "currentWorkload": 0,
+    "activeTasks": [],
+    "skills": ["design", "ui", "ux", "architecture", "tailwind"]
+  },
+  {
+    "name": "denji",
+    "role": "Researcher",
+    "specialization": "research",
+    "currentWorkload": 0,
+    "activeTasks": [],
+    "skills": ["research", "analysis", "documentation"]
+  },
+  {
+    "name": "kobeni",
+    "role": "Tester",
+    "specialization": "testing",
+    "currentWorkload": 0,
+    "activeTasks": [],
+    "skills": ["testing", "qa", "tdd", "vitest", "playwright"]
+  },
+  {
+    "name": "himeno",
+    "role": "Reviewer",
+    "specialization": "review",
+    "currentWorkload": 0,
+    "activeTasks": [],
+    "skills": ["review", "quality", "standards", "code-review"]
+  },
+  {
+    "name": "kishibe",
+    "role": "Archivist",
+    "specialization": "documentation",
+    "currentWorkload": 0,
+    "activeTasks": [],
+    "skills": ["documentation", "archiving", "memory-management"]
+  }
+]

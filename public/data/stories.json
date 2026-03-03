@@ -1,0 +1,85 @@
+[
+  {
+    "id": "STORY-001",
+    "title": "Implement Agile Workflow Dashboard",
+    "description": "Add story/ticket tracking system with real-time updates",
+    "type": "feature",
+    "priority": "high",
+    "status": "in-progress",
+    "assignee": "reze",
+    "createdAt": "2026-03-03T16:45:00Z",
+    "updatedAt": "2026-03-03T23:05:00Z",
+    "tickets": [
+      {
+        "id": "STORY-001-001",
+        "title": "GitHub Hosting Setup",
+        "description": "Configure dashboard for GitHub Pages deployment",
+        "assignee": "aki",
+        "status": "in-progress",
+        "priority": "high",
+        "storyId": "STORY-001"
+      },
+      {
+        "id": "STORY-001-002",
+        "title": "Mobile Responsive Design",
+        "description": "Optimize dashboard for mobile phone viewing",
+        "assignee": "power",
+        "status": "pending",
+        "priority": "medium",
+        "storyId": "STORY-001"
+      },
+      {
+        "id": "STORY-001-003",
+        "title": "Real-time Demo Data",
+        "description": "Create simulation data for GitHub-hosted demo",
+        "assignee": "denji",
+        "status": "completed",
+        "priority": "medium",
+        "storyId": "STORY-001"
+      }
+    ]
+  },
+  {
+    "id": "STORY-002",
+    "title": "Build internal documentation portal",
+    "description": "Implementation request from founder",
+    "type": "feature",
+    "priority": "medium",
+    "status": "pending",
+    "assignee": "reze",
+    "createdAt": "2026-03-03T16:05:17.593Z",
+    "updatedAt": "2026-03-03T23:05:00Z",
+    "tickets": []
+  },
+  {
+    "id": "STORY-003",
+    "title": "Mobile App Development",
+    "description": "Create companion Android/iOS app for task tracking",
+    "type": "feature",
+    "priority": "high",
+    "status": "planning",
+    "assignee": "reze",
+    "createdAt": "2026-03-03T23:05:00Z",
+    "updatedAt": "2026-03-03T23:05:00Z",
+    "tickets": [
+      {
+        "id": "STORY-003-001",
+        "title": "React Native Research",
+        "description": "Evaluate React Native vs Flutter for mobile app",
+        "assignee": "denji",
+        "status": "completed",
+        "priority": "medium",
+        "storyId": "STORY-003"
+      },
+      {
+        "id": "STORY-003-002",
+        "title": "API Integration Design",
+        "description": "Design API for mobile dashboard integration",
+        "assignee": "aki",
+        "status": "in-progress",
+        "priority": "high",
+        "storyId": "STORY-003"
+      }
+    ]
+  }
+]
