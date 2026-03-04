@@ -68,11 +68,9 @@ async function getActiveAssignments(): Promise<Assignment[]> {
     const response = await fetch('/current-assignments.json')
     
     if (!response.ok) {
-      // Fallback: use production path
-      const response2 = await fetch('/current-assignments.json')
-      if (!response2.ok) throw new Error('Failed to fetch assignments')
-      const data: AssignmentsData = await response2.json()
-      return data.assignments.filter(a => a.status !== 'completed')
+      // If file doesn't exist on GitHub Pages, return empty array
+      console.warn('Assignments file not found, using empty assignments')
+      return []
     }
     
     const data: AssignmentsData = await response.json()
