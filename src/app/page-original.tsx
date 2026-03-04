@@ -9,16 +9,18 @@ import { useFileWatcher } from '@/hooks/useFileWatcher'
 import { useEffect, useState } from 'react'
 import type { Task, Agent, Story, Ticket } from '@/types/task'
 
-export default function TabbedDashboard() {
+export default function HomePage() {
   const { agents: monitoredAgents, isWatching, lastUpdate, error: watcherError } = useFileWatcher()
   const [agents, setAgents] = useState<Agent[]>([])
   const [stories, setStories] = useState<Story[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Load initial data
     const loadData = async () => {
       try {
         setLoading(true)
+        // Load from static JSON files
         const [agentsResponse, storiesResponse] = await Promise.all([
           fetch('/data/agents.json'),
           fetch('/data/stories.json')
@@ -29,6 +31,7 @@ export default function TabbedDashboard() {
         
         setAgents(agentsData || [])
         setStories(storiesData || [])
+        console.log('✅ Data loaded:', agentsData?.length, 'agents,', storiesData?.length, 'stories')
       } catch (error) {
         console.error('Error loading data:', error)
       } finally {
@@ -39,8 +42,10 @@ export default function TabbedDashboard() {
     loadData()
   }, [])
 
+  // Watch for file changes detected by useFileWatcher
   useEffect(() => {
     if (lastUpdate) {
+      console.log('File changed detected, reloading data...')
       const reloadData = async () => {
         try {
           const [agentsResponse, storiesResponse] = await Promise.all([
@@ -48,8 +53,12 @@ export default function TabbedDashboard() {
             fetch('/data/stories.json')
           ])
           
-          setAgents(await agentsResponse.json() || [])
-          setStories(await storiesResponse.json() || [])
+          const agentsData = await agentsResponse.json()
+          const storiesData = await storiesResponse.json()
+          
+          setAgents(agentsData || [])
+          setStories(storiesData || [])
+          console.log('✅ Data reloaded after file change')
         } catch (error) {
           console.error('Error reloading data:', error)
         }
@@ -58,10 +67,12 @@ export default function TabbedDashboard() {
     }
   }, [lastUpdate])
 
+  // Determine status indicators
   const hasRosterData = agents.length > 0
   const hasStories = stories.length > 0
   const isLoading = loading || (!hasRosterData && !hasStories)
 
+  // Flatten tickets from all stories for the tasks section
   const allTickets = stories.flatMap(story => story.tickets).map(ticket => ({
     id: ticket.id,
     title: ticket.title,
@@ -102,7 +113,7 @@ export default function TabbedDashboard() {
         </p>
       </header>
 
-      {/* Overview Card */}
+      {/* Live Status Demo */}
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>{isLoading ? "🔄 Loading..." : hasStories ? "🚀 Agile Workflow Active" : hasRosterData ? "✅ GitHub Hosted Dashboard" : "🎯 Mobile Ready Dashboard"}</CardTitle>
@@ -133,134 +144,89 @@ export default function TabbedDashboard() {
         </CardContent>
       </Card>
 
-      {/* Tabbed Interface */}
-      <Tabs defaultValue="team" className="space-y-6">
-        <TabsList className="grid grid-cols-3 w-full max-w-md">
-          <TabsTrigger value="team">👥 Team Status</TabsTrigger>
-          <TabsTrigger value="tickets">📋 Tickets ({allTicketsCount})</TabsTrigger>
-          <TabsTrigger value="agents">👨‍💼 Agents ({agents.length})</TabsTrigger>
-        </TabsList>
-
-        {/* Team Status Tab */}
-        <TabsContent value="team">
-          <Card>
-            <CardHeader>
-              <CardTitle>Live Team Status</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <TeamStatus />
-            </CardContent>
-          </Card>
-
-          {hasStories && stories.length > 0 && (
-            <Card className="mt-4">
-              <CardHeader>
-                <CardTitle>Active Stories</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-4">
-                  {stories.map((story) => (
-                    <Card key={story.id} className="border-l-4 border-l-blue-500">
-                      <CardHeader>
+      {/* Stories Section */}
+      {isLoading ? (
+        <p className="text-muted-foreground mb-8">Loading stories...</p>
+      ) : hasStories ? (
+        <>
+          <h2 className="text-2xl font-bold text-foreground mb-4">Stories ({stories.length})</h2>
+          <div className="grid gap-4 mb-8">
+            {stories.map((story) => (
+              <Card key={story.id} className="border-l-4 border-l-blue-500">
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-xl">{story.title}</CardTitle>
+                      <p className="text-sm text-muted-foreground mt-1">{story.description}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">{story.type}</span>
+                      <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">{story.status}</span>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <h4 className="font-medium mb-3">Tickets ({story.tickets.length})</h4>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {story.tickets.map((ticket) => (
+                      <div key={ticket.id} className="border rounded-lg p-3">
                         <div className="flex justify-between items-start">
-                          <div>
-                            <CardTitle className="text-xl">{story.title}</CardTitle>
-                            <p className="text-sm text-muted-foreground mt-1">{story.description}</p>
-                          </div>
-                          <div className="flex gap-2">
-                            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">{story.type}</span>
-                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">{story.status}</span>
-                          </div>
+                          <span className="font-medium">{ticket.title}</span>
+                          <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">{ticket.status}</span>
                         </div>
-                      </CardHeader>
-                      {story.tickets.length > 0 && (
-                        <CardContent>
-                          <h4 className="font-medium mb-3">Tickets ({story.tickets.length})</h4>
-                          <div className="grid gap-3 md:grid-cols-2">
-                            {story.tickets.map((ticket) => (
-                              <div key={ticket.id} className="border rounded-lg p-3">
-                                <div className="flex justify-between items-start">
-                                  <span className="font-medium">{ticket.title}</span>
-                                  <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">{ticket.status}</span>
-                                </div>
-                                <p className="text-sm text-muted-foreground mt-1">{ticket.description}</p>
-                                <div className="flex justify-between items-center mt-2">
-                                  <span className="text-xs">Assigned to: {ticket.assignee}</span>
-                                  <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded">{ticket.priority}</span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      )}
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
+                        <p className="text-sm text-muted-foreground mt-1">{ticket.description}</p>
+                        <div className="flex justify-between items-center mt-2">
+                          <span className="text-xs">Assigned to: {ticket.assignee}</span>
+                          <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded">{ticket.priority}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </>
+      ) : null}
 
-        {/* Tickets Tab */}
-        <TabsContent value="tickets">
-          {isLoading ? (
-            <Card>
-              <CardContent className="p-6">
-                <p className="text-muted-foreground">Loading tickets...</p>
-              </CardContent>
-            </Card>
-          ) : allTicketsCount > 0 ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {allTickets.map((ticket) => (
-                <TaskCard
-                  key={ticket.id}
-                  task={ticket as Task}
-                  showAssignee={true}
-                  showCategory={false}
-                  className="h-fit"
-                />
-              ))}
-            </div>
-          ) : (
-            <Card>
-              <CardContent className="p-6 text-center">
-                <p className="text-muted-foreground">No tickets currently assigned.</p>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
+      {/* Tickets Section */}
+      <h2 className="text-2xl font-bold text-foreground mb-4">Tickets ({isLoading ? 0 : allTicketsCount})</h2>
+      {isLoading ? (
+        <p className="text-muted-foreground mb-8">Loading tickets...</p>
+      ) : allTicketsCount > 0 ? (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
+          {allTickets.map((ticket) => (
+            <TaskCard
+              key={ticket.id}
+              task={ticket}
+              compact
+              showAssignee
+              showDueDate
+              showCategory
+            />
+          ))}
+        </div>
+      ) : (
+        <p className="text-muted-foreground mb-8">No tickets available</p>
+      )}
 
-        {/* Agents Tab */}
-        <TabsContent value="agents">
-          {isLoading ? (
-            <Card>
-              <CardContent className="p-6">
-                <p className="text-muted-foreground">Loading agents...</p>
-              </CardContent>
-            </Card>
-          ) : agents.length > 0 ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {agents.map((agent) => (
-                <AgentCard
-                  key={agent.name}
-                  agent={agent}
-                  showActiveTasks={true}
-                  className="h-fit"
-                />
-              ))}
-            </div>
-          ) : (
-            <Card>
-              <CardContent className="p-6 text-center">
-                <p className="text-muted-foreground">No agent data available.</p>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-      </Tabs>
+      {/* Agents Section */}
+      <h2 className="text-2xl font-bold text-foreground mb-4">Agents ({isLoading ? 0 : agents.length})</h2>
+      {isLoading ? (
+        <p className="text-muted-foreground mb-8">Loading agents...</p>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+          {agents.map((agent, index) => (
+            <AgentCard key={index} agent={agent} />
+          ))}
+        </div>
+      )}
 
-      {/* Available Features Footer */}
-      <Card className="mt-8">
+      {/* Real Team Tracking */}
+      <TeamStatus />
+
+      {/* Available Features */}
+      <Card>
         <CardHeader>
           <CardTitle>🚀 Available Features</CardTitle>
         </CardHeader>
