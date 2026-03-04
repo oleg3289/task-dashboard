@@ -5,6 +5,8 @@ const nextConfig = {
   images: {
     unoptimized: true
   },
+  // GitHub Pages deployment base path
+  basePath: '/task-dashboard',
   // Remove API routes for static export
   experimental: {
     serverComponentsExternalPackages: ['ws']
