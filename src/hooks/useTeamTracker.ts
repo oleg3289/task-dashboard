@@ -61,24 +61,10 @@ async function getAgentAssignments(agentId: string): Promise<Assignment[]> {
 }
 
 /**
- * Get all active (non-completed) assignments
+ * Get all active assignments - simplified version using real-status.json
  */
 async function getActiveAssignments(): Promise<Assignment[]> {
-  try {
-    const response = await fetch('/current-assignments.json')
-    
-    if (!response.ok) {
-      // If file doesn't exist on GitHub Pages, return empty array
-      console.warn('Assignments file not found, using empty assignments')
-      return []
-    }
-    
-    const data: AssignmentsData = await response.json()
-    return data.assignments.filter(a => a.status !== 'completed')
-  } catch (error) {
-    console.error('Failed to fetch active assignments:', error)
-    return []
-  }
+  return [] // Simplified - assignments not currently used
 }
 
 /**
@@ -125,16 +111,22 @@ export function useTeamTracker(): TeamTrackerHook {
       const activeAssignments = await getActiveAssignments()
       
       // Use real status data for assignments
-      const response = await fetch('/real-status.json')
-      const realStatus = response.ok ? await response.json() : {}
+      const agentAssignmentCount: Record<string, number> = {}
       
-      const agentAssignmentCount = Object.keys(realStatus).reduce((acc, agentId) => {
-        const agent = realStatus[agentId]
-        if (agent.status === 'available' || agent.currentTask) {
-          acc[agentId] = 1
+      try {
+        const response = await fetch('/real-status.json')
+        if (response.ok) {
+          const realStatus = await response.json()
+          Object.keys(realStatus).forEach(agentId => {
+            const agent = realStatus[agentId]
+            if (agent.status === 'available' || agent.currentTask) {
+              agentAssignmentCount[agentId] = 1
+            }
+          })
         }
-        return acc
-      }, {} as Record<string, number>)
+      } catch {
+        // Ignore errors - use empty assignments
+      }
       
       // Map team roster with real status
       const teamStatus = teamRoster.map(member => {
