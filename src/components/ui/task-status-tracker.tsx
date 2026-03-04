@@ -9,6 +9,8 @@ import type { Task, TaskStatus } from '@/types/task'
 const statusSteps: { status: TaskStatus; label: string; description: string }[] = [
   { status: 'pending', label: 'Pending', description: 'Task created, waiting to start' },
   { status: 'progress', label: 'In Progress', description: 'Work has begun' },
+  { status: 'in-progress', label: 'In Progress', description: 'Work has begun' },
+  { status: 'planning', label: 'Planning', description: 'Planning phase' },
   { status: 'completed', label: 'Completed', description: 'Task finished successfully' },
 ]
 
@@ -198,6 +200,8 @@ export function StatusProgressBar({ task, className }: StatusProgressBarProps) {
   const progressMap: Record<TaskStatus, number> = {
     pending: 0,
     progress: 50,
+    'in-progress': 50,
+    planning: 25,
     blocked: 50,
     completed: 100,
   }
@@ -267,6 +271,26 @@ export function StatusChangeButtons({
         </svg>
       )},
     ],
+    'in-progress': [
+      { next: 'completed', label: 'Complete', icon: (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+        </svg>
+      )},
+      { next: 'blocked', label: 'Block', icon: (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+        </svg>
+      )},
+    ],
+    planning: [
+      { next: 'progress', label: 'Start Work', icon: (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      )},
+    ],
     blocked: [
       { next: 'progress', label: 'Unblock', icon: (
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -323,8 +347,10 @@ export function StatusHistory({ history, className }: StatusHistoryProps) {
   const statusLabels: Record<TaskStatus, string> = {
     pending: 'Pending',
     progress: 'In Progress',
+    'in-progress': 'In Progress',
     completed: 'Completed',
     blocked: 'Blocked',
+    planning: 'Planning',
   }
   
   return (

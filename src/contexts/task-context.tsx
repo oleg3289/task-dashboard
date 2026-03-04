@@ -277,7 +277,7 @@ export function TaskProvider({
         return a.title.localeCompare(b.title) * sortDir
       }
       if (sortField === 'status') {
-        const order = { pending: 0, progress: 1, blocked: 2, completed: 3 }
+        const order = { pending: 0, progress: 1, 'in-progress': 1, planning: 0.5, blocked: 2, completed: 3 }
         return (order[a.status] - order[b.status]) * sortDir
       }
       if (sortField === 'priority') {

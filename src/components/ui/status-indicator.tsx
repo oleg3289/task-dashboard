@@ -12,8 +12,10 @@ const statusDotVariants = cva(
       status: {
         pending: 'bg-muted-foreground',
         progress: 'bg-info animate-pulse',
+        'in-progress': 'bg-info animate-pulse',
         completed: 'bg-success',
         blocked: 'bg-destructive',
+        planning: 'bg-muted-foreground',
       },
       size: {
         sm: 'h-1.5 w-1.5',
@@ -36,8 +38,10 @@ const statusRingVariants = cva(
       status: {
         pending: '',
         progress: 'bg-info/40',
+        'in-progress': 'bg-info/40',
         completed: '',
         blocked: 'bg-destructive/40',
+        planning: '',
       },
     },
     defaultVariants: {
@@ -54,8 +58,10 @@ const statusPillVariants = cva(
       status: {
         pending: 'bg-muted text-muted-foreground',
         progress: 'bg-info/10 text-info border border-info/20',
+        'in-progress': 'bg-info/10 text-info border border-info/20',
         completed: 'bg-success/10 text-success border border-success/20',
         blocked: 'bg-destructive/10 text-destructive border border-destructive/20',
+        planning: 'bg-muted/10 text-muted-foreground border border-muted/20',
       },
     },
     defaultVariants: {
@@ -136,8 +142,10 @@ export function StatusPill({
   const labels: Record<TaskStatus, string> = {
     pending: 'Pending',
     progress: 'In Progress',
+    'in-progress': 'In Progress',
     completed: 'Completed',
     blocked: 'Blocked',
+    planning: 'Planning',
   }
 
   return (
@@ -276,6 +284,7 @@ export interface StatusSummaryProps {
     progress: number
     completed: number
     blocked: number
+    planning?: number
   }
   showLabels?: boolean
   className?: string
@@ -286,7 +295,7 @@ export function StatusSummary({
   showLabels = true,
   className 
 }: StatusSummaryProps) {
-  const total = counts.pending + counts.progress + counts.completed + counts.blocked
+  const total = counts.pending + counts.progress + counts.completed + counts.blocked + (counts.planning || 0)
   
   return (
     <div className={cn('flex items-center gap-4', className)}>
@@ -306,6 +315,12 @@ export function StatusSummary({
         <StatusDot status="blocked" />
         {showLabels && <span className="text-xs text-muted-foreground">{counts.blocked} blocked</span>}
       </div>
+      {counts.planning && (
+        <div className="flex items-center gap-1.5">
+          <StatusDot status="planning" />
+          {showLabels && <span className="text-xs text-muted-foreground">{counts.planning} planning</span>}
+        </div>
+      )}
     </div>
   )
 }

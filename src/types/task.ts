@@ -1,4 +1,4 @@
-export type TaskStatus = 'pending' | 'progress' | 'completed' | 'blocked';
+export type TaskStatus = 'pending' | 'progress' | 'in-progress' | 'completed' | 'blocked' | 'planning';
 export type TaskPriority = 'low' | 'medium' | 'high' | 'critical';
 export type TaskCategory = 'development' | 'research' | 'design' | 'testing' | 'documentation' | 'planning' | 'monitoring';
 
@@ -97,7 +97,7 @@ export interface Story {
   description: string;
   type: 'feature' | 'bug' | 'improvement' | 'documentation' | 'research';
   priority: TaskPriority;
-  status: TaskStatus;
+  status: string; // Allow any string for flexibility
   assignee: string;
   createdAt: string;
   updatedAt: string;
@@ -109,7 +109,7 @@ export interface Ticket {
   title: string;
   description: string;
   assignee: string;
-  status: TaskStatus;
+  status: string; // Allow any string for flexibility
   priority: TaskPriority;
   storyId: string;
 }

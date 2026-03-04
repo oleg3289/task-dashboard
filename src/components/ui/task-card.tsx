@@ -13,8 +13,10 @@ const taskStatusVariants = cva(
       status: {
         pending: 'text-muted-foreground',
         progress: 'text-info',
+        'in-progress': 'text-info',
         completed: 'text-success',
         blocked: 'text-destructive',
+        planning: 'text-muted-foreground',
       },
     },
     defaultVariants: {
@@ -49,8 +51,10 @@ const taskCardVariants = cva(
       status: {
         pending: 'border-l-4 border-l-muted-foreground/30',
         progress: 'border-l-4 border-l-info',
+        'in-progress': 'border-l-4 border-l-info',
         completed: 'border-l-4 border-l-success opacity-75',
         blocked: 'border-l-4 border-l-destructive',
+        planning: 'border-l-4 border-l-muted-foreground/30',
       },
       selected: {
         true: 'ring-2 ring-primary ring-offset-2',
@@ -65,7 +69,7 @@ const taskCardVariants = cva(
 )
 
 // Category badge variants
-const categoryVariants: Record<TaskCategory, "default" | "secondary" | "outline"> = {
+const categoryVariants: Record<string, "default" | "secondary" | "outline"> = {
   development: 'default',
   research: 'secondary',
   design: 'outline',
@@ -76,11 +80,13 @@ const categoryVariants: Record<TaskCategory, "default" | "secondary" | "outline"
 }
 
 // Status display configuration
-const statusConfig: Record<TaskStatus, { label: string; badgeVariant: "default" | "secondary" | "destructive" | "success" | "warning" | "info" }> = {
+const statusConfig: Record<string, { label: string; badgeVariant: "default" | "secondary" | "destructive" | "success" | "warning" | "info" }> = {
   pending: { label: 'Pending', badgeVariant: 'secondary' },
   progress: { label: 'In Progress', badgeVariant: 'info' },
+  'in-progress': { label: 'In Progress', badgeVariant: 'info' },
   completed: { label: 'Completed', badgeVariant: 'success' },
   blocked: { label: 'Blocked', badgeVariant: 'destructive' },
+  planning: { label: 'Planning', badgeVariant: 'secondary' },
 }
 
 // Priority display configuration
@@ -118,6 +124,11 @@ export function TaskStatusIcon({
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01M12 3a9 9 0 110 18 9 9 0 010-18z" />
         </svg>
       )}
+      {status === 'planning' && (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2zM17 5h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V7a2 2 0 012-2zM9 13h2a2 2 0 012 2v2a2 2 0 01-2 2H9a2 2 0 01-2-2v-2a2 2 0 012-2z" />
+        </svg>
+      )}
     </span>
   )
 }
@@ -134,7 +145,20 @@ export function PriorityDot({
 
 // Task Card Props
 export interface TaskCardProps extends VariantProps<typeof taskCardVariants> {
-  task: Task
+  task: {
+    id: string
+    title: string
+    description: string
+    status: string
+    priority: 'low' | 'medium' | 'high' | 'critical'
+    assignee: string
+    dueDate?: string
+    category: string
+    createdAt: string
+    updatedAt: string
+    dependencies?: string[]
+    relatedFiles?: string[]
+  }
   selected?: boolean
   compact?: boolean
   showAssignee?: boolean
@@ -155,14 +179,14 @@ export function TaskCard({
   onClick,
   className,
 }: TaskCardProps) {
-  const statusInfo = statusConfig[task.status]
+  const statusInfo = statusConfig[task.status] || { label: task.status, badgeVariant: 'secondary' as const }
   const priorityInfo = priorityConfig[task.priority]
 
   if (compact) {
     return (
       <div
         className={cn(
-          taskCardVariants({ status: task.status, selected }),
+          taskCardVariants({ status: task.status as any, selected }),
           'flex items-center gap-3 cursor-pointer',
           className
         )}
@@ -183,7 +207,7 @@ export function TaskCard({
   return (
     <div
       className={cn(
-        taskCardVariants({ status: task.status, selected }),
+        taskCardVariants({ status: task.status as any, selected }),
         'cursor-pointer',
         className
       )}
