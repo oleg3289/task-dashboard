@@ -149,7 +149,7 @@ export function useTeamTracker(): TeamTrackerHook {
         
         return {
           ...member,
-          status: determineAgentStatus(hasSession, hasActiveAssignment) as const,
+          status: determineAgentStatus(hasSession, hasActiveAssignment),
           currentTask: currentTask as string | null,
           sessionCount: agentSessions.length,
           lastActive: lastActivity,
