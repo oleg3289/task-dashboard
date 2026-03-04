@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { TaskCard } from '@/components/ui/task-card'
 import { AgentCard } from '@/components/ui/agent-workload'
+import { TeamStatus } from '@/components/ui/team-status'
 import { useFileWatcher } from '@/hooks/useFileWatcher'
 import { useEffect, useState } from 'react'
 import type { Task, Agent, Story, Ticket } from '@/types/task'
@@ -220,6 +221,9 @@ export default function HomePage() {
         </div>
       )}
 
+      {/* Real Team Tracking */}
+      <TeamStatus />
+
       {/* Available Features */}
       <Card>
         <CardHeader>
@@ -242,6 +246,14 @@ export default function HomePage() {
             <li className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
               <span>Workload visualization</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span>Live team tracking</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span>Real assignment monitoring</span>
             </li>
           </ul>
         </CardContent>
