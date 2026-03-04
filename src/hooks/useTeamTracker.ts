@@ -65,11 +65,11 @@ async function getAgentAssignments(agentId: string): Promise<Assignment[]> {
  */
 async function getActiveAssignments(): Promise<Assignment[]> {
   try {
-    const response = await fetch('/data/current-assignments.json')
+    const response = await fetch('/current-assignments.json')
     
     if (!response.ok) {
-      // Fallback: use relative path for development
-      const response2 = await fetch('/work-tracker/current-assignments.json')
+      // Fallback: use production path
+      const response2 = await fetch('/current-assignments.json')
       if (!response2.ok) throw new Error('Failed to fetch assignments')
       const data: AssignmentsData = await response2.json()
       return data.assignments.filter(a => a.status !== 'completed')
