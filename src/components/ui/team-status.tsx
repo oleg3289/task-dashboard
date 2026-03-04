@@ -23,10 +23,7 @@ export function TeamStatus({ compact = false }: TeamStatusProps) {
   if (isLoading) {
     return (
       <Card>
-        <CardHeader>
-          <CardTitle>👥 Team Status</CardTitle>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <p className="text-muted-foreground">Loading team status...</p>
         </CardContent>
       </Card>
@@ -36,10 +33,7 @@ export function TeamStatus({ compact = false }: TeamStatusProps) {
   if (error) {
     return (
       <Card>
-        <CardHeader>
-          <CardTitle>👥 Team Status</CardTitle>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <p className="text-red-500">Error: {error}</p>
         </CardContent>
       </Card>
@@ -50,10 +44,7 @@ export function TeamStatus({ compact = false }: TeamStatusProps) {
     const activeMembers = team.filter(m => m.status === 'active' || m.status === 'working')
     return (
       <Card>
-        <CardHeader>
-          <CardTitle>👥 Team Activity ({activeMembers.length}/{team.length})</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-4">
+        <CardContent className="grid grid-cols-2 gap-4 p-6">
           {team.map(member => (
             <div key={member.id} className="flex items-center gap-2">
               <div className={`w-3 h-3 rounded-full ${getStatusColor(member.status)}`}></div>
@@ -67,10 +58,7 @@ export function TeamStatus({ compact = false }: TeamStatusProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>👥 Live Team Status</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 p-6">
         {team.map(member => (
           <div key={member.id} className="flex items-center justify-between p-3 border rounded-lg">
             <div className="flex items-center gap-3">

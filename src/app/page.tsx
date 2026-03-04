@@ -143,14 +143,7 @@ export default function TabbedDashboard() {
 
         {/* Team Status Tab */}
         <TabsContent value="team">
-          <Card>
-            <CardHeader>
-              <CardTitle>Live Team Status</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <TeamStatus />
-            </CardContent>
-          </Card>
+          <TeamStatus />
 
           {hasStories && stories.length > 0 && (
             <Card className="mt-4">
