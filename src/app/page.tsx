@@ -11,11 +11,13 @@ export default function HomePage() {
   const { agents: monitoredAgents, isWatching, lastUpdate, error: watcherError } = useFileWatcher()
   const [agents, setAgents] = useState<Agent[]>([])
   const [stories, setStories] = useState<Story[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     // Load initial data
     const loadData = async () => {
       try {
+        setLoading(true)
         // Load from static JSON files
         const [agentsResponse, storiesResponse] = await Promise.all([
           fetch('/data/agents.json'),
@@ -30,6 +32,8 @@ export default function HomePage() {
         console.log('✅ Data loaded:', agentsData?.length, 'agents,', storiesData?.length, 'stories')
       } catch (error) {
         console.error('Error loading data:', error)
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -64,6 +68,7 @@ export default function HomePage() {
   // Determine status indicators
   const hasRosterData = agents.length > 0
   const hasStories = stories.length > 0
+  const isLoading = loading || (!hasRosterData && !hasStories)
 
   // Flatten tickets from all stories for the tasks section
   const allTickets = stories.flatMap(story => story.tickets).map(ticket => ({
@@ -88,7 +93,9 @@ export default function HomePage() {
       <header className="mb-8">
         <h1 className="text-3xl font-bold text-foreground">Task Dashboard</h1>
         <p className="text-muted-foreground mt-2">
-          {hasStories ? (
+          {isLoading ? (
+            <span className="text-yellow-500 font-medium">🔄 Loading dashboard data...</span>
+          ) : hasStories ? (
             <span className="text-success font-medium">🚀 Agile workflow active ({stories.length} stories, {allTicketsCount} tickets)</span>
           ) : hasRosterData ? (
             <span className="text-success font-medium">✅ GitHub-hosted dashboard ({agents.length} agents with roles)</span>
@@ -107,24 +114,28 @@ export default function HomePage() {
       {/* Live Status Demo */}
       <Card className="mb-8">
         <CardHeader>
-          <CardTitle>{hasStories ? "🚀 Agile Workflow Active" : hasRosterData ? "✅ GitHub Hosted Dashboard" : "🎯 Mobile Ready Dashboard"}</CardTitle>
+          <CardTitle>{isLoading ? "🔄 Loading..." : hasStories ? "🚀 Agile Workflow Active" : hasRosterData ? "✅ GitHub Hosted Dashboard" : "🎯 Mobile Ready Dashboard"}</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
           <div>
             <h3 className="text-lg font-semibold text-foreground mb-2">{hasStories ? "🏢 Story Breakdown" : "🏢 Company Structure"}</h3>
             <p className="text-sm text-muted-foreground">
-              {hasStories
-                ? `${stories.length} stories with ${allTicketsCount} tickets tracked`
-                : `Using structured company roster with ${agents.length} roles`
+              {isLoading
+                ? 'Loading agent data...'
+                : hasStories
+                  ? `${stories.length} stories with ${allTicketsCount} tickets tracked`
+                  : `Using structured company roster with ${agents.length} roles`
               }
             </p>
           </div>
           <div>
             <h3 className="text-lg font-semibold text-foreground mb-2">📊 Live Updates</h3>
             <p className="text-sm text-muted-foreground">
-              {isWatching 
-                ? `File watching active • Last update: ${lastUpdate ? new Date(lastUpdate).toISOString() : 'None'}`
-                : 'Automatic reload when files change'
+              {isLoading
+                ? 'Data loading...'
+                : isWatching 
+                  ? `File watching active • Last update: ${lastUpdate ? new Date(lastUpdate).toISOString() : 'None'}`
+                  : 'Automatic reload when files change'
               }
             </p>
           </div>
@@ -132,7 +143,9 @@ export default function HomePage() {
       </Card>
 
       {/* Stories Section */}
-      {hasStories && (
+      {isLoading ? (
+        <p className="text-muted-foreground mb-8">Loading stories...</p>
+      ) : hasStories ? (
         <>
           <h2 className="text-2xl font-bold text-foreground mb-4">Stories ({stories.length})</h2>
           <div className="grid gap-4 mb-8">
@@ -172,11 +185,13 @@ export default function HomePage() {
             ))}
           </div>
         </>
-      )}
+      ) : null}
 
       {/* Tickets Section */}
-      <h2 className="text-2xl font-bold text-foreground mb-4">Tickets ({allTicketsCount})</h2>
-      {allTicketsCount > 0 ? (
+      <h2 className="text-2xl font-bold text-foreground mb-4">Tickets ({isLoading ? 0 : allTicketsCount})</h2>
+      {isLoading ? (
+        <p className="text-muted-foreground mb-8">Loading tickets...</p>
+      ) : allTicketsCount > 0 ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
           {allTickets.map((ticket) => (
             <TaskCard
@@ -194,12 +209,16 @@ export default function HomePage() {
       )}
 
       {/* Agents Section */}
-      <h2 className="text-2xl font-bold text-foreground mb-4">Agents ({agents.length})</h2>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-        {agents.map((agent, index) => (
-          <AgentCard key={index} agent={agent} />
-        ))}
-      </div>
+      <h2 className="text-2xl font-bold text-foreground mb-4">Agents ({isLoading ? 0 : agents.length})</h2>
+      {isLoading ? (
+        <p className="text-muted-foreground mb-8">Loading agents...</p>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+          {agents.map((agent, index) => (
+            <AgentCard key={index} agent={agent} />
+          ))}
+        </div>
+      )}
 
       {/* Available Features */}
       <Card>
