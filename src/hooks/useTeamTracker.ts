@@ -3,14 +3,31 @@
 import { useState, useEffect } from 'react'
 import { sessions_list, subagents } from '@/lib/openclaw-api'
 
+export interface Assignment {
+  id: string
+  task: string
+  assignee: string
+  status: string
+  priority: string
+  createdAt: string
+  timeout: number | string
+  [key: string]: any
+}
+
+export interface AssignmentsData {
+  assignments: Assignment[]
+  lastUpdated: string
+}
+
 export interface TeamMember {
   id: string
   name: string 
   role: string
-  status: 'active' | 'idle' | 'working' | 'error'
+  status: 'active' | 'idle' | 'working' | 'available' | 'error'
   currentTask: string | null
   sessionCount: number
   lastActive: string | null
+  hasActiveAssignment: boolean
 }
 
 export interface TeamTrackerHook {
@@ -18,6 +35,64 @@ export interface TeamTrackerHook {
   isLoading: boolean
   error: string | null
   refresh: () => void
+}
+
+/**
+ * Get assignments for a specific agent
+ */
+async function getAgentAssignments(agentId: string): Promise<Assignment[]> {
+  try {
+    const response = await fetch('/data/current-assignments.json')
+    
+    if (!response.ok) {
+      // Fallback: use relative path for development
+      const response2 = await fetch('/work-tracker/current-assignments.json')
+      if (!response2.ok) throw new Error('Failed to fetch assignments')
+      const data: AssignmentsData = await response2.json()
+      return data.assignments.filter(a => a.assignee === agentId)
+    }
+    
+    const data: AssignmentsData = await response.json()
+    return data.assignments.filter(a => a.assignee === agentId)
+  } catch (error) {
+    console.error(`Failed to fetch assignments for ${agentId}:`, error)
+    return []
+  }
+}
+
+/**
+ * Get all active (non-completed) assignments
+ */
+async function getActiveAssignments(): Promise<Assignment[]> {
+  try {
+    const response = await fetch('/data/current-assignments.json')
+    
+    if (!response.ok) {
+      // Fallback: use relative path for development
+      const response2 = await fetch('/work-tracker/current-assignments.json')
+      if (!response2.ok) throw new Error('Failed to fetch assignments')
+      const data: AssignmentsData = await response2.json()
+      return data.assignments.filter(a => a.status !== 'completed')
+    }
+    
+    const data: AssignmentsData = await response.json()
+    return data.assignments.filter(a => a.status !== 'completed')
+  } catch (error) {
+    console.error('Failed to fetch active assignments:', error)
+    return []
+  }
+}
+
+/**
+ * Determine agent status based on sessions and assignments
+ */
+function determineAgentStatus(
+  hasSession: boolean,
+  hasActiveAssignment: boolean
+): 'active' | 'idle' | 'working' | 'available' {
+  if (!hasSession) return 'idle'
+  if (hasActiveAssignment) return 'working'
+  return 'available'
 }
 
 /**
@@ -48,6 +123,15 @@ export function useTeamTracker(): TeamTrackerHook {
       // Get actual OpenClaw session data
       const sessions = await sessions_list()
       
+      // Get active assignments (non-completed)
+      const activeAssignments = await getActiveAssignments()
+      
+      // Create a map of agent IDs to their active assignment count
+      const agentAssignmentCount = activeAssignments.reduce((acc, assignment) => {
+        acc[assignment.assignee] = (acc[assignment.assignee] || 0) + 1
+        return acc
+      }, {} as Record<string, number>)
+      
       // Map team roster with real status
       const teamStatus = teamRoster.map(member => {
         // Check if agent has active sessions
@@ -56,17 +140,20 @@ export function useTeamTracker(): TeamTrackerHook {
           session.sessionKey.toLowerCase().includes(member.id.toLowerCase())
         )
         
-        const isActive = agentSessions.length > 0
-        const lastActivity = agentSessions.length > 0 
-          ? new Date().toISOString() 
-          : null
+        const hasSession = agentSessions.length > 0
+        const hasActiveAssignment = agentAssignmentCount[member.id] > 0
+        const lastActivity = hasSession ? new Date().toISOString() : null
+        const currentTask = hasActiveAssignment 
+          ? activeAssignments.find(a => a.assignee === member.id)?.task 
+          : hasSession ? 'Available (no active task)' : null
         
         return {
           ...member,
-          status: agentSessions.length > 0 ? 'working' as const : 'idle' as const,
-          currentTask: agentSessions.length > 0 ? 'Active session' : null,
+          status: determineAgentStatus(hasSession, hasActiveAssignment) as const,
+          currentTask: currentTask as string | null,
           sessionCount: agentSessions.length,
-          lastActive: agentSessions.length > 0 ? new Date().toISOString() : null
+          lastActive: lastActivity,
+          hasActiveAssignment
         }
       })
       

@@ -3,7 +3,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { TeamStatus } from '../team-status'
 import { useTeamTracker } from '@/hooks/useTeamTracker'
 
-// Mock the useTeamTracker hook
 vi.mock('@/hooks/useTeamTracker', () => ({
   useTeamTracker: vi.fn()
 }))
@@ -46,19 +45,31 @@ describe('TeamStatus', () => {
           id: 'makima',
           name: 'Makima',
           role: 'CEO Orchestrator',
-          status: 'working',
-          currentTask: 'Active session',
+          status: 'working' as const,
+          currentTask: 'Active session with assignment',
           sessionCount: 1,
-          lastActive: new Date().toISOString()
+          lastActive: new Date().toISOString(),
+          hasActiveAssignment: true
         },
         {
           id: 'himeno',
           name: 'Himeno',
           role: 'Reviewer',
-          status: 'idle',
+          status: 'available' as const,
+          currentTask: 'Available (no active task)',
+          sessionCount: 1,
+          lastActive: new Date().toISOString(),
+          hasActiveAssignment: false
+        },
+        {
+          id: 'kobeni',
+          name: 'Kobeni',
+          role: 'Tester',
+          status: 'idle' as const,
           currentTask: null,
           sessionCount: 0,
-          lastActive: null
+          lastActive: null,
+          hasActiveAssignment: false
         }
       ],
       isLoading: false,
@@ -67,15 +78,18 @@ describe('TeamStatus', () => {
 
     render(<TeamStatus />)
 
-    // Check Makima is shown as working
     expect(screen.getByText('Makima')).toBeInTheDocument()
     expect(screen.getByText('CEO Orchestrator')).toBeInTheDocument()
     expect(screen.getByText('working')).toBeInTheDocument()
-    expect(screen.getByText('Active session')).toBeInTheDocument()
+    expect(screen.getByText('Active session with assignment')).toBeInTheDocument()
 
-    // Check Himeno is shown as idle
     expect(screen.getByText('Himeno')).toBeInTheDocument()
     expect(screen.getByText('Reviewer')).toBeInTheDocument()
+    expect(screen.getByText('available')).toBeInTheDocument()
+    expect(screen.getByText('Available (no active task)').toBeInTheDocument())
+
+    expect(screen.getByText('Kobeni')).toBeInTheDocument()
+    expect(screen.getByText('Tester')).toBeInTheDocument()
     expect(screen.getByText('idle')).toBeInTheDocument()
   })
 
@@ -86,10 +100,11 @@ describe('TeamStatus', () => {
           id: 'aki',
           name: 'Aki',
           role: 'Developer',
-          status: 'working',
+          status: 'working' as const,
           currentTask: 'Development work',
           sessionCount: 2,
-          lastActive: new Date().toISOString()
+          lastActive: new Date().toISOString(),
+          hasActiveAssignment: true
         }
       ],
       isLoading: false,
@@ -98,7 +113,6 @@ describe('TeamStatus', () => {
 
     render(<TeamStatus compact={true} />)
 
-    // Should show Aki in compact grid layout
     expect(screen.getByText('Aki')).toBeInTheDocument()
   })
 
@@ -109,10 +123,11 @@ describe('TeamStatus', () => {
           id: 'makima',
           name: 'Makima',
           role: 'CEO',
-          status: 'working',
+          status: 'working' as const,
           currentTask: 'Active',
           sessionCount: 1,
-          lastActive: new Date().toISOString()
+          lastActive: new Date().toISOString(),
+          hasActiveAssignment: true
         }
       ],
       isLoading: false,
@@ -121,7 +136,6 @@ describe('TeamStatus', () => {
 
     render(<TeamStatus />)
 
-    // Check status indicator has correct class
     const statusDot = screen.getByText('working').closest('div')
     expect(statusDot).toBeInTheDocument()
   })
@@ -135,7 +149,6 @@ describe('TeamStatus', () => {
 
     render(<TeamStatus />)
 
-    // Should not crash with empty team
     expect(screen.queryByText('Makima')).not.toBeInTheDocument()
     expect(screen.queryByText('Aki')).not.toBeInTheDocument()
   })

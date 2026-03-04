@@ -14,6 +14,7 @@ export function TeamStatus({ compact = false }: TeamStatusProps) {
     switch (status) {
       case 'active': return 'bg-green-500'
       case 'working': return 'bg-blue-500'  
+      case 'available': return 'bg-emerald-400'
       case 'idle': return 'bg-gray-400'
       case 'error': return 'bg-red-500'
       default: return 'bg-gray-400'
