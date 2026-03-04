@@ -5,6 +5,7 @@
  */
 
 import { vi, beforeEach, afterEach } from 'vitest'
+import '@testing-library/jest-dom/vitest'
 
 // Mock the window.matchMedia API for responsiveness tests
 Object.defineProperty(window, 'matchMedia', {

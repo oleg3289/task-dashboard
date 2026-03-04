@@ -18,44 +18,28 @@ export interface SubagentInfo {
 }
 
 export async function sessions_list(filters?: any): Promise<SessionInfo[]> {
-  // REAL tracking with code review workflow integration
-  const now = new Date()
-  const hour = now.getHours()
-  
-  const sessions: SessionInfo[] = []
-  
-  // CEO activates during work hours
-  if (hour >= 9 && hour < 18) {
-    sessions.push({
-      sessionKey: 'agent:makima:telegram:direct:548498854',
-      agentId: 'makima',
-      status: 'active',
-      createdAt: now.toISOString()
-    })
+  // REAL session tracking via active-sessions.json
+  try {
+    const response = await fetch('/data/active-sessions.json')
+    
+    if (!response.ok) {
+      throw new Error(`Session tracker error: ${response.status}`)
+    }
+    
+    const sessions = await response.json()
+    
+    // Map to SessionInfo format
+    return sessions.map((session: any) => ({
+      sessionKey: session.sessionKey,
+      agentId: session.agentId,
+      status: 'active', // All sessions in this file are active
+      createdAt: session.lastActive
+    }))
+    
+  } catch (error) {
+    console.error('Failed to fetch active sessions:', error)
+    return []
   }
-  
-  // Developers work during development hours
-  if ((hour % 4 === 0) || (hour % 4 === 2)) {
-    sessions.push({
-      sessionKey: 'agent:aki:subagent:development',
-      agentId: 'aki',
-      status: 'active',
-      createdAt: new Date(now.getTime() - 300000).toISOString()
-    })
-  }
-  
-  // Himeno WORKS when there are pending reviews
-  // Simulate 1 pending review during work hours
-  if (hour >= 9 && hour < 18) {
-    sessions.push({
-      sessionKey: 'agent:himeno:subagent:review-work',
-      agentId: 'himeno',
-      status: 'active',
-      createdAt: new Date(now.getTime() - 600000).toISOString()
-    })
-  }
-  
-  return sessions
 }
 
 export async function subagents(action: string, target?: string): Promise<SubagentInfo[]> {

@@ -28,6 +28,7 @@
     "@axe-core/playwright": "^4.11.1",
     "@playwright/test": "^1.40.0",
     "@tailwindcss/postcss": "^4.2.1",
+    "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^14.0.0",
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",

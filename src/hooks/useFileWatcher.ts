@@ -24,7 +24,13 @@ export function useFileWatcher(): FileWatcherHook {
         const response = await fetch('/data/agents.json')
         if (response.ok) {
           const data = await response.json()
-          setAgents(data?.map((a: any) => a.name) || [])
+          // Handle both array and non-array responses
+          const agentNames = Array.isArray(data) 
+            ? data.map((a: any) => a.name) 
+            : Array.isArray(data?.map) 
+              ? data.map((a: any) => a.name) 
+              : []
+          setAgents(agentNames || [])
           setLastUpdate(new Date().toISOString())
           setError(null)
         }
