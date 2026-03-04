@@ -3,24 +3,16 @@
     "sessionKey": "agent:makima:eb2bbe29-7b8a-4aaf-b62b-49cf3c1fc407",
     "agentId": "makima",
     "status": "active",
-    "lastActive": "2026-03-04T13:34:38.190Z",
+    "lastActive": "2026-03-04T13:55:36.920Z",
     "duration": 0,
     "task": null
   },
   {
-    "sessionKey": "agent:kobeni:746c81e5-bebb-46f2-8829-abb98f8dfc51",
-    "agentId": "kobeni",
+    "sessionKey": "agent:himeno:ca7f3920-f4f8-4870-ab55-085be398d456",
+    "agentId": "himeno",
     "status": "active",
-    "lastActive": "2026-03-04T13:08:38.360Z",
-    "duration": 26,
-    "task": null
-  },
-  {
-    "sessionKey": "agent:kobeni:83cfda45-03d1-4462-a4b3-1d452d96b3c3",
-    "agentId": "kobeni",
-    "status": "active",
-    "lastActive": "2026-03-04T13:09:01.790Z",
-    "duration": 26,
+    "lastActive": "2026-03-04T13:55:27.970Z",
+    "duration": 0,
     "task": null
   }
 ]
