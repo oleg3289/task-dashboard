@@ -124,9 +124,15 @@ export function useTeamTracker(): TeamTrackerHook {
       // Get active assignments (non-completed)
       const activeAssignments = await getActiveAssignments()
       
-      // Create a map of agent IDs to their active assignment count
-      const agentAssignmentCount = activeAssignments.reduce((acc, assignment) => {
-        acc[assignment.assignee] = (acc[assignment.assignee] || 0) + 1
+      // Use real status data for assignments
+      const response = await fetch('/real-status.json')
+      const realStatus = response.ok ? await response.json() : {}
+      
+      const agentAssignmentCount = Object.keys(realStatus).reduce((acc, agentId) => {
+        const agent = realStatus[agentId]
+        if (agent.status === 'available' || agent.currentTask) {
+          acc[agentId] = 1
+        }
         return acc
       }, {} as Record<string, number>)
       

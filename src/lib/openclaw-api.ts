@@ -18,26 +18,34 @@ export interface SubagentInfo {
 }
 
 export async function sessions_list(filters?: any): Promise<SessionInfo[]> {
-  // REAL session tracking via active-sessions.json
+  // REAL status tracking via real-status.json
   try {
-    const response = await fetch('/data/active-sessions.json')
+    const response = await fetch('/real-status.json')
     
     if (!response.ok) {
-      throw new Error(`Session tracker error: ${response.status}`)
+      throw new Error(`Real status error: ${response.status}`)
     }
     
-    const sessions = await response.json()
+    const statusData = await response.json()
+    const sessions: SessionInfo[] = []
     
-    // Map to SessionInfo format
-    return sessions.map((session: any) => ({
-      sessionKey: session.sessionKey,
-      agentId: session.agentId,
-      status: 'active', // All sessions in this file are active
-      createdAt: session.lastActive
-    }))
+    // Create sessions for agents that are actually active
+    Object.keys(statusData).forEach(agentId => {
+      const agent = statusData[agentId]
+      if (agent.status === 'available' || agent.lastActive) {
+        sessions.push({
+          sessionKey: `agent:${agentId}:real-status`,
+          agentId: agentId,
+          status: 'active',
+          createdAt: agent.lastActive || new Date().toISOString()
+        })
+      }
+    })
+    
+    return sessions
     
   } catch (error) {
-    console.error('Failed to fetch active sessions:', error)
+    console.error('Failed to fetch real status:', error)
     return []
   }
 }
