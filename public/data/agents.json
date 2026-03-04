@@ -5,7 +5,11 @@
     "specialization": "orchestration",
     "currentWorkload": 0,
     "activeTasks": [],
-    "skills": ["strategy", "coordination", "project-management"]
+    "skills": [
+      "strategy",
+      "coordination",
+      "project-management"
+    ]
   },
   {
     "name": "reze",
@@ -13,7 +17,11 @@
     "specialization": "planning",
     "currentWorkload": 0,
     "activeTasks": [],
-    "skills": ["planning", "organization", "timeline-management"]
+    "skills": [
+      "planning",
+      "organization",
+      "timeline-management"
+    ]
   },
   {
     "name": "aki",
@@ -21,7 +29,13 @@
     "specialization": "coding",
     "currentWorkload": 0,
     "activeTasks": [],
-    "skills": ["coding", "testing", "devops", "nextjs", "typescript"]
+    "skills": [
+      "coding",
+      "testing",
+      "devops",
+      "nextjs",
+      "typescript"
+    ]
   },
   {
     "name": "power",
@@ -29,7 +43,13 @@
     "specialization": "design",
     "currentWorkload": 0,
     "activeTasks": [],
-    "skills": ["design", "ui", "ux", "architecture", "tailwind"]
+    "skills": [
+      "design",
+      "ui",
+      "ux",
+      "architecture",
+      "tailwind"
+    ]
   },
   {
     "name": "denji",
@@ -37,7 +57,11 @@
     "specialization": "research",
     "currentWorkload": 0,
     "activeTasks": [],
-    "skills": ["research", "analysis", "documentation"]
+    "skills": [
+      "research",
+      "analysis",
+      "documentation"
+    ]
   },
   {
     "name": "kobeni",
@@ -45,7 +69,13 @@
     "specialization": "testing",
     "currentWorkload": 0,
     "activeTasks": [],
-    "skills": ["testing", "qa", "tdd", "vitest", "playwright"]
+    "skills": [
+      "testing",
+      "qa",
+      "tdd",
+      "vitest",
+      "playwright"
+    ]
   },
   {
     "name": "himeno",
@@ -53,7 +83,12 @@
     "specialization": "review",
     "currentWorkload": 0,
     "activeTasks": [],
-    "skills": ["review", "quality", "standards", "code-review"]
+    "skills": [
+      "review",
+      "quality",
+      "standards",
+      "code-review"
+    ]
   },
   {
     "name": "kishibe",
@@ -61,6 +96,10 @@
     "specialization": "documentation",
     "currentWorkload": 0,
     "activeTasks": [],
-    "skills": ["documentation", "archiving", "memory-management"]
+    "skills": [
+      "documentation",
+      "archiving",
+      "memory-management"
+    ]
   }
 ]

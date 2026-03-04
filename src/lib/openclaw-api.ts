@@ -18,24 +18,11 @@ export interface SubagentInfo {
 
 // Mock API functions that would connect to real OpenClaw
 export async function sessions_list(filters?: any): Promise<SessionInfo[]> {
-  // In production: Make actual API call
-  return [
-    {
-      sessionKey: 'agent:aki:subagent:d6e6a260-8f0a-4525-a61a-a8808be58c6c',
-      agentId: 'aki',
-      status: 'active',
-      createdAt: new Date().toISOString()
-    }
-  ]
+  // Mock data - no active sessions currently
+  return []
 }
 
 export async function subagents(action: string, target?: string): Promise<SubagentInfo[]> {
-  // In production: Make actual API call
-  return [
-    {
-      target: 'agent:aki:subagent:d6e6a260-8f0a-4525-a61a-a8808be58c6c',
-      status: 'running',
-      started: new Date().toISOString()
-    }
-  ]
+  // Mock data - no active subagents currently
+  return []
 }
