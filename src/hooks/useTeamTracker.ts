@@ -45,14 +45,30 @@ export function useTeamTracker(): TeamTrackerHook {
     try {
       setIsLoading(true)
       
-      // Simulate real team monitoring (would use actual OpenClaw API)
-      const teamStatus = teamRoster.map(member => ({
-        ...member,
-        status: 'idle' as const, // All idle since no active sessions
-        currentTask: null,
-        sessionCount: 0,
-        lastActive: null
-      }))
+      // Get actual OpenClaw session data
+      const sessions = await sessions_list()
+      
+      // Map team roster with real status
+      const teamStatus = teamRoster.map(member => {
+        // Check if agent has active sessions
+        const agentSessions = sessions.filter(session => 
+          session.agentId === member.id || 
+          session.sessionKey.toLowerCase().includes(member.id.toLowerCase())
+        )
+        
+        const isActive = agentSessions.length > 0
+        const lastActivity = agentSessions.length > 0 
+          ? new Date().toISOString() 
+          : null
+        
+        return {
+          ...member,
+          status: isActive ? 'working' as const : 'idle' as const,
+          currentTask: isActive ? 'Active session' : null,
+          sessionCount: agentSessions.length,
+          lastActive: lastActivity
+        }
+      })
       
       setTeam(teamStatus)
       setError(null)
