@@ -63,10 +63,10 @@ export function useTeamTracker(): TeamTrackerHook {
         
         return {
           ...member,
-          status: isActive ? 'working' as const : 'idle' as const,
-          currentTask: isActive ? 'Active session' : null,
+          status: agentSessions.length > 0 ? 'working' as const : 'idle' as const,
+          currentTask: agentSessions.length > 0 ? 'Active session' : null,
           sessionCount: agentSessions.length,
-          lastActive: lastActivity
+          lastActive: agentSessions.length > 0 ? new Date().toISOString() : null
         }
       })
       

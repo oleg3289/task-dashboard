@@ -18,40 +18,13 @@ export interface SubagentInfo {
 }
 
 export async function sessions_list(filters?: any): Promise<SessionInfo[]> {
-  // Dynamic simulation based on current time
+  // REAL tracking: Only show activity when there's work being done
+  // For now, default to idle state (most realistic)
   const now = new Date()
-  const hour = now.getHours()
-  const minute = now.getMinutes()
   
-  const sessions: SessionInfo[] = [
-    // CEO is always active during business hours
-    {
-      sessionKey: 'agent:makima:telegram:direct:548498854',
-      agentId: 'makima',
-      status: hour >= 9 && hour < 18 ? 'active' : 'idle', // 9 AM - 6 PM
-      createdAt: now.toISOString()
-    }
-  ]
-  
-  // Developer active during odd hours (simulating development cycles)
-  if (hour % 2 === 1 && minute < 45) { 
-    sessions.push({
-      sessionKey: 'agent:aki:subagent:626948d7',
-      agentId: 'aki',
-      status: 'active',
-      createdAt: new Date(now.getTime() - Math.random() * 600000).toISOString() // 0-10 min ago
-    })
-  }
-  
-  // Planner active during planning hours
-  if (hour === 10 || hour === 15) { // 10 AM and 3 PM
-    sessions.push({
-      sessionKey: 'agent:reze:subagent:develop-planning',
-      agentId: 'reze',
-      status: 'active',
-      createdAt: new Date(now.getTime() - 300000).toISOString() // 5 min ago
-    })
-  }
+  // Default: All agents idle unless we have real work detection
+  // This prevents showing fake "working" status
+  const sessions: SessionInfo[] = []
   
   return sessions
 }
