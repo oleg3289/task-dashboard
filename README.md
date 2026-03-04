@@ -78,4 +78,4 @@ This dashboard is part of the company workflow tracking system. For issues or up
 
 ---
 
-**Built with ❤️ for efficient company operations**
+**Built with ❤️ for efficient company operations**# Tabbed interface update Wed Mar  4 11:44:10 CET 2026
