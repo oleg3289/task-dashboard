@@ -3,18 +3,39 @@
  * All API calls must use this to correctly resolve paths
  */
 
+// Cached basePath detection
+let cachedBasePath: string | null = null
+
 /**
  * Get the base path for API calls
  * Returns '/task-dashboard' for production (GitHub Pages)
  * Returns '' for local development
  */
 export function getBasePath(): string {
-  // In browser, check if we're on GitHub Pages
-  if (typeof window !== 'undefined') {
-    // If the app is served from a subpath, use that
-    const pathPrefix = process.env.NEXT_PUBLIC_BASE_PATH || ''
-    return pathPrefix
+  if (cachedBasePath !== null) {
+    return cachedBasePath
   }
+
+  if (typeof window !== 'undefined') {
+    // Check if we're on GitHub Pages by examining the current URL
+    // GitHub Pages serves from /<repo-name>/, local dev serves from /
+    const pathname = window.location.pathname
+    
+    // If the URL contains /task-dashboard in the path, we're on GitHub Pages
+    if (pathname.startsWith('/task-dashboard')) {
+      cachedBasePath = '/task-dashboard'
+      return cachedBasePath
+    }
+    
+    // Also check NEXT_PUBLIC_BASE_PATH env var if set
+    const envBasePath = process.env.NEXT_PUBLIC_BASE_PATH
+    if (envBasePath) {
+      cachedBasePath = envBasePath
+      return cachedBasePath
+    }
+  }
+  
+  cachedBasePath = ''
   return ''
 }
 
