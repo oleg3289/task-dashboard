@@ -1,8 +1,8 @@
 {
   "makima": {
-    "status": "idle",
+    "status": "available",
     "lastTask": "Company coordination",
-    "lastActive": "2026-03-05T18:23:00.877Z",
+    "lastActive": "2026-03-06T15:31:49.891Z",
     "currentTask": null
   },
   "reze": {
@@ -12,9 +12,9 @@
     "currentTask": null
   },
   "aki": {
-    "status": "idle",
-    "lastTask": "Fix Chrome DevTools console warnings in dashboard project",
-    "lastActive": "2026-03-05T18:23:00.877Z",
+    "status": "available",
+    "lastTask": "Fix dashboard basePath for GitHub Pages deployment",
+    "lastActive": "2026-03-06T15:31:49.891Z",
     "currentTask": null
   },
   "power": {
