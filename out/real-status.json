@@ -1,8 +1,8 @@
 {
   "makima": {
-    "status": "idle",
+    "status": "available",
     "lastTask": "Company coordination",
-    "lastActive": "2026-03-05T18:23:00.877Z",
+    "lastActive": "2026-03-06T15:31:49.891Z",
     "currentTask": null
   },
   "reze": {
@@ -12,9 +12,9 @@
     "currentTask": null
   },
   "aki": {
-    "status": "idle",
-    "lastTask": "Fix Chrome DevTools console warnings in dashboard project",
-    "lastActive": "2026-03-05T18:23:00.877Z",
+    "status": "available",
+    "lastTask": "Test tracking integration",
+    "lastActive": "2026-03-06T15:47:17.007Z",
     "currentTask": null
   },
   "power": {
@@ -24,9 +24,9 @@
     "currentTask": null
   },
   "denji": {
-    "status": "idle",
-    "lastTask": "Research market trends in AI-powered dashboards",
-    "lastActive": "2026-03-04T15:20:00Z",
+    "status": "available",
+    "lastTask": "Research best practices for real-time dashboard updates",
+    "lastActive": "2026-03-06T15:52:08.210Z",
     "currentTask": null
   },
   "kobeni": {

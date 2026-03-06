@@ -115,13 +115,33 @@ export function TicketsTab({
   }, [filteredTickets, filter.showArchived])
 
   // Calculate filtered stats - MUST be called before any conditional returns
-  const filteredStats = React.useMemo(() => ({
-    total: filteredTickets.length,
-    totalAll: tickets.length,
-    inProgress: filteredTickets.filter(t => t.status === 'in-progress').length,
-    review: filteredTickets.filter(t => t.status === 'review').length,
-    done: filteredTickets.filter(t => t.status === 'done').length,
-  }), [filteredTickets, tickets.length])
+  const filteredStats = React.useMemo(() => {
+    // Get all tickets (may or may not include archived based on showArchived)
+    const visibleTickets = filter.showArchived 
+      ? tickets 
+      : tickets.filter(t => !t.isArchived)
+    
+    // Stats based on visible tickets (respects showArchived)
+    const total = visibleTickets.length
+    const done = visibleTickets.filter(t => t.status === 'done').length
+    const inProgress = visibleTickets.filter(t => t.status === 'in-progress').length
+    const review = visibleTickets.filter(t => t.status === 'review').length
+    const todo = visibleTickets.filter(t => t.status === 'todo').length
+    const backlog = visibleTickets.filter(t => t.status === 'backlog').length
+    
+    // For "Showing X of Y" display - total in current filter context
+    const displayedCount = filteredTickets.length
+    
+    return {
+      total,
+      displayedCount,
+      done,
+      inProgress,
+      review,
+      todo,
+      backlog,
+    }
+  }, [filteredTickets, tickets, filter.showArchived])
 
   // Handle ticket click
   const handleTicketClick = React.useCallback((ticket: DataTicket) => {
@@ -216,8 +236,8 @@ export function TicketsTab({
       <div className="flex flex-wrap gap-2 text-sm">
         <span className="text-muted-foreground">
           {filter.hasActiveFilters 
-            ? `Showing ${filteredStats.total} of ${filteredStats.totalAll}`
-            : `Total: ${filteredStats.totalAll}`
+            ? `Showing ${filteredStats.displayedCount} of ${filteredStats.total}`
+            : `Total: ${filteredStats.total}`
           }
         </span>
         {filteredStats.inProgress > 0 && (
