@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
+import { apiFetch } from '@/lib/api-path'
 
 // ============================================================================
 // Types
@@ -216,7 +217,7 @@ interface ArchivedTicket extends RawTicket {
  */
 async function fetchStories(): Promise<RawStory[]> {
   try {
-    const response = await fetch('/data/stories.json?t=' + Date.now(), {
+    const response = await apiFetch('/data/stories.json?t=' + Date.now(), {
       cache: 'no-store',
     })
     if (!response.ok) {
@@ -234,7 +235,7 @@ async function fetchStories(): Promise<RawStory[]> {
  */
 async function fetchArchivedTickets(): Promise<ArchivedTicket[]> {
   try {
-    const response = await fetch('/data/archived-tickets.json?t=' + Date.now(), {
+    const response = await apiFetch('/data/archived-tickets.json?t=' + Date.now(), {
       cache: 'no-store',
     })
     if (!response.ok) {
@@ -252,7 +253,7 @@ async function fetchArchivedTickets(): Promise<ArchivedTicket[]> {
  */
 async function fetchAgents(): Promise<RawAgent[]> {
   try {
-    const response = await fetch('/data/agents.json?t=' + Date.now(), {
+    const response = await apiFetch('/data/agents.json?t=' + Date.now(), {
       cache: 'no-store',
     })
     if (!response.ok) {
@@ -279,12 +280,12 @@ interface ActiveSession {
 
 async function fetchActiveSessions(): Promise<ActiveSession[]> {
   try {
-    const response = await fetch('/data/active-sessions.json?t=' + Date.now(), {
+    const response = await apiFetch('/data/active-sessions.json?t=' + Date.now(), {
       cache: 'no-store',
     })
     if (!response.ok) {
       // Fallback: try alternative location
-      const fallbackResponse = await fetch('/active-status.json?t=' + Date.now(), {
+      const fallbackResponse = await apiFetch('/active-status.json?t=' + Date.now(), {
         cache: 'no-store',
       })
       if (!fallbackResponse.ok) {

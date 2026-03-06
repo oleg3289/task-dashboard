@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { apiFetch } from '@/lib/api-path'
 
 export interface FileWatcherHook {
   isWatching: boolean
@@ -26,7 +27,7 @@ export function useFileWatcher(): FileWatcherHook {
     const pollForUpdates = async () => {
       try {
         // Poll agents
-        const agentsResponse = await fetch('/data/agents.json')
+        const agentsResponse = await apiFetch('/data/agents.json')
         if (agentsResponse.ok) {
           const data = await agentsResponse.json()
           const agentNames = Array.isArray(data) 
@@ -36,7 +37,7 @@ export function useFileWatcher(): FileWatcherHook {
         }
         
         // Poll stories and check for changes
-        const storiesResponse = await fetch('/data/stories.json?t=' + Date.now(), {
+        const storiesResponse = await apiFetch('/data/stories.json?t=' + Date.now(), {
           headers: { 'Cache-Control': 'no-cache' }
         })
         if (storiesResponse.ok) {

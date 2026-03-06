@@ -4,6 +4,8 @@
  * Note: For browser environment, uses time-based simulation since child_process not available
  */
 
+import { apiFetch } from './api-path'
+
 export interface SessionInfo {
   sessionKey: string
   agentId: string
@@ -20,7 +22,7 @@ export interface SubagentInfo {
 export async function sessions_list(filters?: any): Promise<SessionInfo[]> {
   // REAL status tracking via real-status.json
   try {
-    const response = await fetch('/real-status.json')
+    const response = await apiFetch('/real-status.json')
     
     if (!response.ok) {
       throw new Error(`Real status error: ${response.status}`)

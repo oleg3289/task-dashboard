@@ -8,6 +8,7 @@ import { StoriesTab } from '@/components/ui/stories-tab'
 import { TicketsFilterProvider } from '@/contexts/tickets-filter-context'
 import { useFileWatcher } from '@/hooks/useFileWatcher'
 import { useTeamTracker } from '@/hooks/useTeamTracker'
+import { apiFetch } from '@/lib/api-path'
 import { useEffect, useState } from 'react'
 import type { Agent, Story } from '@/types/task'
 
@@ -23,8 +24,8 @@ export default function TabbedDashboard() {
       try {
         setLoading(true)
         const [agentsResponse, storiesResponse] = await Promise.all([
-          fetch('/data/agents.json'),
-          fetch('/data/stories.json')
+          apiFetch('/data/agents.json'),
+          apiFetch('/data/stories.json')
         ])
         
         const agentsData = await agentsResponse.json()
@@ -47,8 +48,8 @@ export default function TabbedDashboard() {
       const reloadData = async () => {
         try {
           const [agentsResponse, storiesResponse] = await Promise.all([
-            fetch('/data/agents.json'),
-            fetch('/data/stories.json')
+            apiFetch('/data/agents.json'),
+            apiFetch('/data/stories.json')
           ])
           
           setAgents(await agentsResponse.json() || [])

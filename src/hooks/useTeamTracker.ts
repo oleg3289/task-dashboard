@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { apiFetch } from '@/lib/api-path'
 
 export interface TeamMember {
   id: string
@@ -53,7 +54,7 @@ export function useTeamTracker(): TeamTrackerHook {
       setIsLoading(true)
       
       // Fetch the real status data
-      const response = await fetch('/real-status.json?t=' + Date.now(), {
+      const response = await apiFetch('/real-status.json?t=' + Date.now(), {
         cache: 'no-store'
       })
       
