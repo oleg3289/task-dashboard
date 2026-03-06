@@ -1,44 +1,44 @@
 {
   "makima": {
-    "status": "available",
+    "status": "idle",
     "lastTask": "Company coordination",
-    "lastActive": "2026-03-04T17:48:00Z",
-    "currentTask": null
-  },
-  "aki": {
-    "status": "available", 
-    "lastTask": "Fix console errors on dashboard",
-    "lastActive": "2026-03-04T16:34:00Z",
-    "currentTask": null
-  },
-  "power": {
-    "status": "available",
-    "lastTask": "Design mobile-responsive improvements",
-    "lastActive": "2026-03-04T15:48:00Z",
-    "currentTask": null
-  },
-  "denji": {
-    "status": "available",
-    "lastTask": "Research market trends in AI-powered dashboards",
-    "lastActive": "2026-03-04T15:20:00Z",
-    "currentTask": null
-  },
-  "himeno": {
-    "status": "available",
-    "lastTask": "Dashboard review",
-    "lastActive": "2026-03-04T15:56:00Z",
-    "currentTask": null
-  },
-  "kobeni": {
-    "status": "available",
-    "lastTask": "Runtime error investigation",
-    "lastActive": "2026-03-04T16:16:00Z",
+    "lastActive": "2026-03-05T18:23:00.877Z",
     "currentTask": null
   },
   "reze": {
     "status": "idle",
     "lastTask": null,
     "lastActive": null,
+    "currentTask": null
+  },
+  "aki": {
+    "status": "idle",
+    "lastTask": "Fix Chrome DevTools console warnings in dashboard project",
+    "lastActive": "2026-03-05T18:23:00.877Z",
+    "currentTask": null
+  },
+  "power": {
+    "status": "idle",
+    "lastTask": "Design mobile-responsive improvements",
+    "lastActive": "2026-03-05T18:15:33.382Z",
+    "currentTask": null
+  },
+  "denji": {
+    "status": "idle",
+    "lastTask": "Research market trends in AI-powered dashboards",
+    "lastActive": "2026-03-04T15:20:00Z",
+    "currentTask": null
+  },
+  "kobeni": {
+    "status": "idle",
+    "lastTask": "Runtime error investigation",
+    "lastActive": "2026-03-04T16:16:00Z",
+    "currentTask": null
+  },
+  "himeno": {
+    "status": "idle",
+    "lastTask": "Dashboard review",
+    "lastActive": "2026-03-04T15:56:00Z",
     "currentTask": null
   },
   "kishibe": {

@@ -1,16 +1,19 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { TaskCard } from '@/components/ui/task-card'
-import { AgentCard } from '@/components/ui/agent-workload'
 import { TeamStatus } from '@/components/ui/team-status'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { TicketsTab } from '@/components/ui/tickets-tab'
+import { StoriesTab } from '@/components/ui/stories-tab'
+import { TicketsFilterProvider } from '@/contexts/tickets-filter-context'
 import { useFileWatcher } from '@/hooks/useFileWatcher'
+import { useTeamTracker } from '@/hooks/useTeamTracker'
 import { useEffect, useState } from 'react'
-import type { Task, Agent, Story, Ticket } from '@/types/task'
+import type { Agent, Story } from '@/types/task'
 
 export default function TabbedDashboard() {
-  const { agents: monitoredAgents, isWatching, lastUpdate, error: watcherError } = useFileWatcher()
+  const { isWatching, lastUpdate, error: watcherError } = useFileWatcher()
+  const { team, isLoading: teamLoading } = useTeamTracker()
   const [agents, setAgents] = useState<Agent[]>([])
   const [stories, setStories] = useState<Story[]>([])
   const [loading, setLoading] = useState(true)
@@ -62,230 +65,180 @@ export default function TabbedDashboard() {
   const hasStories = stories.length > 0
   const isLoading = loading || (!hasRosterData && !hasStories)
 
-  const allTickets = stories.flatMap(story => story.tickets).map(ticket => ({
-    id: ticket.id,
-    title: ticket.title,
-    description: ticket.description,
-    status: ticket.status,
-    priority: ticket.priority,
-    category: 'development' as any,
-    assignee: ticket.assignee,
-    dueDate: '',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    ticketId: ticket.id,
-    storyId: ticket.storyId
-  }))
+  // Calculate ticket stats
+  const allTickets = stories.flatMap(story => story.tickets || [])
+  const ticketsByStatus = {
+    done: allTickets.filter(t => t.status === 'done' || t.status === 'completed').length,
+    inProgress: allTickets.filter(t => t.status === 'in-progress').length,
+    review: allTickets.filter(t => t.status === 'review').length,
+    todo: allTickets.filter(t => t.status === 'todo' || t.status === 'to-do').length,
+    backlog: allTickets.filter(t => t.status === 'backlog').length,
+  }
+  const totalTickets = allTickets.length
+  const completionPercent = totalTickets > 0 
+    ? Math.round((ticketsByStatus.done / totalTickets) * 100) 
+    : 0
 
-  const allTicketsCount = allTickets.length
-  
+  // Agent status counts
+  const workingAgents = team.filter(m => m.status === 'working').length
+  const availableAgents = team.filter(m => m.status === 'available' || m.status === 'active').length
+  const idleAgents = team.filter(m => m.status === 'idle').length
+
   return (
     <div className="min-h-screen bg-background p-4 md:p-6">
-      <header className="mb-8">
+      <header className="mb-6">
         <h1 className="text-3xl font-bold text-foreground">Task Dashboard</h1>
-        <p className="text-muted-foreground mt-2">
+        <p className="text-muted-foreground mt-1">
           {isLoading ? (
-            <span className="text-yellow-500 font-medium">🔄 Loading dashboard data...</span>
-          ) : hasStories ? (
-            <span className="text-success font-medium">🚀 Agile workflow active ({stories.length} stories, {allTicketsCount} tickets)</span>
-          ) : hasRosterData ? (
-            <span className="text-success font-medium">✅ GitHub-hosted dashboard ({agents.length} agents with roles)</span>
+            <span className="text-yellow-500 font-medium">🔄 Loading...</span>
           ) : (
-            'GitHub-hosted dashboard with automatic refresh capabilities'
-          )}
-          {isWatching && (
-            <span className="text-blue-500 font-medium ml-2">⋅ Auto-refresh active</span>
+            <span>
+              {hasStories && (
+                <span>{stories.length} stories • {totalTickets} tickets • {workingAgents} working</span>
+              )}
+              {isWatching && (
+                <span className="text-blue-500 ml-2">• Auto-refresh on</span>
+              )}
+            </span>
           )}
           {watcherError && (
-            <span className="text-red-500 font-medium ml-2">⋅ Error: {watcherError}</span>
+            <span className="text-red-500 ml-2">• Error: {watcherError}</span>
           )}
         </p>
       </header>
 
-      {/* Overview Card */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>{isLoading ? "🔄 Loading..." : hasStories ? "🚀 Agile Workflow Active" : hasRosterData ? "✅ GitHub Hosted Dashboard" : "🎯 Mobile Ready Dashboard"}</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-4 md:grid-cols-2">
-          <div>
-            <h3 className="text-lg font-semibold text-foreground mb-2">{hasStories ? "🏢 Story Breakdown" : "🏢 Company Structure"}</h3>
-            <p className="text-sm text-muted-foreground">
-              {isLoading
-                ? 'Loading agent data...'
-                : hasStories
-                  ? `${stories.length} stories with ${allTicketsCount} tickets tracked`
-                  : `Using structured company roster with ${agents.length} roles`
-              }
-            </p>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold text-foreground mb-2">📊 Live Updates</h3>
-            <p className="text-sm text-muted-foreground">
-              {isLoading
-                ? 'Data loading...'
-                : isWatching 
-                  ? `File watching active • Last update: ${lastUpdate ? new Date(lastUpdate).toISOString() : 'None'}`
-                  : 'Automatic reload when files change'
-              }
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Tabbed Interface */}
-      <Tabs defaultValue="team" className="space-y-6">
+      <Tabs defaultValue="overview" className="space-y-6">
         <TabsList className="grid grid-cols-3 w-full max-w-md">
-          <TabsTrigger value="team">👥 Team Status</TabsTrigger>
-          <TabsTrigger value="tickets">📋 Tickets ({allTicketsCount})</TabsTrigger>
-          <TabsTrigger value="agents">👨‍💼 Agents ({agents.length})</TabsTrigger>
+          <TabsTrigger value="overview">📊 Overview</TabsTrigger>
+          <TabsTrigger value="stories">📚 Stories ({stories.length})</TabsTrigger>
+          <TabsTrigger value="tickets">📋 Tickets ({totalTickets})</TabsTrigger>
         </TabsList>
 
-        {/* Team Status Tab */}
-        <TabsContent value="team">
+        {/* Overview Tab */}
+        <TabsContent value="overview" className="space-y-6">
+          {/* Quick Stats Row */}
+          <div className="grid gap-4 md:grid-cols-4">
+            <Card>
+              <CardContent className="p-4">
+                <div className="text-2xl font-bold">{workingAgents}</div>
+                <div className="text-sm text-muted-foreground">Working</div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="text-2xl font-bold">{availableAgents}</div>
+                <div className="text-sm text-muted-foreground">Available</div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="text-2xl font-bold">{idleAgents}</div>
+                <div className="text-sm text-muted-foreground">Idle</div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="text-2xl font-bold">{completionPercent}%</div>
+                <div className="text-sm text-muted-foreground">Complete</div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Team Status */}
           <TeamStatus />
 
-          {hasStories && stories.length > 0 && (
-            <Card className="mt-4">
-              <CardHeader>
-                <CardTitle>Active Stories</CardTitle>
+          {/* Currently Working On */}
+          {team.filter(m => m.status === 'working' && m.currentTask).length > 0 && (
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">🔥 Currently Working On</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-4">
-                  {stories.map((story) => (
-                    <Card key={story.id} className="border-l-4 border-l-blue-500">
-                      <CardHeader>
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <CardTitle className="text-xl">{story.title}</CardTitle>
-                            <p className="text-sm text-muted-foreground mt-1">{story.description}</p>
-                          </div>
-                          <div className="flex gap-2">
-                            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">{story.type}</span>
-                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">{story.status}</span>
-                          </div>
-                        </div>
-                      </CardHeader>
-                      {story.tickets.length > 0 && (
-                        <CardContent>
-                          <h4 className="font-medium mb-3">Tickets ({story.tickets.length})</h4>
-                          <div className="grid gap-3 md:grid-cols-2">
-                            {story.tickets.map((ticket) => (
-                              <div key={ticket.id} className="border rounded-lg p-3">
-                                <div className="flex justify-between items-start">
-                                  <span className="font-medium">{ticket.title}</span>
-                                  <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">{ticket.status}</span>
-                                </div>
-                                <p className="text-sm text-muted-foreground mt-1">{ticket.description}</p>
-                                <div className="flex justify-between items-center mt-2">
-                                  <span className="text-xs">Assigned to: {ticket.assignee}</span>
-                                  <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded">{ticket.priority}</span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      )}
-                    </Card>
-                  ))}
+                <div className="space-y-2">
+                  {team
+                    .filter(m => m.status === 'working' && m.currentTask)
+                    .map(member => (
+                      <div key={member.id} className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                        <span className="font-medium">{member.name}</span>
+                        <span className="text-muted-foreground">→</span>
+                        <span className="text-sm truncate">{member.currentTask}</span>
+                      </div>
+                    ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Sprint Progress */}
+          {hasStories && stories.length > 0 && (
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">📈 Progress Overview</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {/* Progress bar */}
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Sprint Completion</span>
+                      <span>{completionPercent}%</span>
+                    </div>
+                    <div className="h-2 bg-muted rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-green-500 transition-all duration-500"
+                        style={{ width: `${completionPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Status breakdown */}
+                  <div className="grid grid-cols-5 gap-2 text-center text-sm">
+                    <div className="p-2 rounded bg-muted/50">
+                      <div className="font-semibold">{ticketsByStatus.done}</div>
+                      <div className="text-xs text-muted-foreground">Done</div>
+                    </div>
+                    <div className="p-2 rounded bg-purple-500/20">
+                      <div className="font-semibold">{ticketsByStatus.review}</div>
+                      <div className="text-xs text-muted-foreground">Review</div>
+                    </div>
+                    <div className="p-2 rounded bg-yellow-500/20">
+                      <div className="font-semibold">{ticketsByStatus.inProgress}</div>
+                      <div className="text-xs text-muted-foreground">In Progress</div>
+                    </div>
+                    <div className="p-2 rounded bg-blue-500/20">
+                      <div className="font-semibold">{ticketsByStatus.todo}</div>
+                      <div className="text-xs text-muted-foreground">To Do</div>
+                    </div>
+                    <div className="p-2 rounded bg-muted/50">
+                      <div className="font-semibold">{ticketsByStatus.backlog}</div>
+                      <div className="text-xs text-muted-foreground">Backlog</div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           )}
         </TabsContent>
 
+        {/* Stories Tab */}
+        <TabsContent value="stories">
+          <StoriesTab 
+            stories={stories.map(story => ({
+              ...story,
+              tickets: story.tickets || []
+            }))}
+          />
+        </TabsContent>
+
         {/* Tickets Tab */}
         <TabsContent value="tickets">
-          {isLoading ? (
-            <Card>
-              <CardContent className="p-6">
-                <p className="text-muted-foreground">Loading tickets...</p>
-              </CardContent>
-            </Card>
-          ) : allTicketsCount > 0 ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {allTickets.map((ticket) => (
-                <TaskCard
-                  key={ticket.id}
-                  task={ticket as Task}
-                  showAssignee={true}
-                  showCategory={false}
-                  className="h-fit"
-                />
-              ))}
-            </div>
-          ) : (
-            <Card>
-              <CardContent className="p-6 text-center">
-                <p className="text-muted-foreground">No tickets currently assigned.</p>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
-        {/* Agents Tab */}
-        <TabsContent value="agents">
-          {isLoading ? (
-            <Card>
-              <CardContent className="p-6">
-                <p className="text-muted-foreground">Loading agents...</p>
-              </CardContent>
-            </Card>
-          ) : agents.length > 0 ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {agents.map((agent) => (
-                <AgentCard
-                  key={agent.name}
-                  agent={agent}
-                  showActiveTasks={true}
-                  className="h-fit"
-                />
-              ))}
-            </div>
-          ) : (
-            <Card>
-              <CardContent className="p-6 text-center">
-                <p className="text-muted-foreground">No agent data available.</p>
-              </CardContent>
-            </Card>
-          )}
+          <TicketsFilterProvider>
+            <TicketsTab />
+          </TicketsFilterProvider>
         </TabsContent>
       </Tabs>
-
-      {/* Available Features Footer */}
-      <Card className="mt-8">
-        <CardHeader>
-          <CardTitle>🚀 Available Features</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <li className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span>Agile workflow tracking</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span>Story/ticket breakdown</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span>Real-time status updates</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span>Workload visualization</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span>Live team tracking</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span>Real assignment monitoring</span>
-            </li>
-          </ul>
-        </CardContent>
-      </Card>
     </div>
   )
 }

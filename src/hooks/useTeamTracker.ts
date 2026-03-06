@@ -1,23 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { sessions_list, subagents } from '@/lib/openclaw-api'
-
-export interface Assignment {
-  id: string
-  task: string
-  assignee: string
-  status: string
-  priority: string
-  createdAt: string
-  timeout: number | string
-  [key: string]: any
-}
-
-export interface AssignmentsData {
-  assignments: Assignment[]
-  lastUpdated: string
-}
 
 export interface TeamMember {
   id: string
@@ -25,9 +8,8 @@ export interface TeamMember {
   role: string
   status: 'active' | 'idle' | 'working' | 'available' | 'error'
   currentTask: string | null
-  sessionCount: number
+  lastTask: string | null
   lastActive: string | null
-  hasActiveAssignment: boolean
 }
 
 export interface TeamTrackerHook {
@@ -37,119 +19,65 @@ export interface TeamTrackerHook {
   refresh: () => void
 }
 
-/**
- * Get assignments for a specific agent
- */
-async function getAgentAssignments(agentId: string): Promise<Assignment[]> {
-  try {
-    const response = await fetch('/data/current-assignments.json')
-    
-    if (!response.ok) {
-      // Fallback: use relative path for development
-      const response2 = await fetch('/work-tracker/current-assignments.json')
-      if (!response2.ok) throw new Error('Failed to fetch assignments')
-      const data: AssignmentsData = await response2.json()
-      return data.assignments.filter(a => a.assignee === agentId)
-    }
-    
-    const data: AssignmentsData = await response.json()
-    return data.assignments.filter(a => a.assignee === agentId)
-  } catch (error) {
-    console.error(`Failed to fetch assignments for ${agentId}:`, error)
-    return []
+const AGENT_ROSTER = [
+  { id: 'makima', name: 'Makima', role: 'CEO Orchestrator' },
+  { id: 'reze', name: 'Reze', role: 'Planner' },
+  { id: 'aki', name: 'Aki', role: 'Developer' },
+  { id: 'power', name: 'Power', role: 'Designer' },
+  { id: 'denji', name: 'Denji', role: 'Researcher' },
+  { id: 'kobeni', name: 'Kobeni', role: 'Tester' },
+  { id: 'himeno', name: 'Himeno', role: 'Reviewer' },
+  { id: 'kishibe', name: 'Kishibe', role: 'Archivist' }
+]
+
+interface StatusData {
+  [agentId: string]: {
+    status: 'active' | 'idle' | 'working' | 'available'
+    lastTask: string | null
+    lastActive: string | null
+    currentTask: string | null
   }
 }
 
 /**
- * Get all active assignments - simplified version using real-status.json
- */
-async function getActiveAssignments(): Promise<Assignment[]> {
-  return [] // Simplified - assignments not currently used
-}
-
-/**
- * Determine agent status based on sessions and assignments
- */
-function determineAgentStatus(
-  hasSession: boolean,
-  hasActiveAssignment: boolean
-): 'active' | 'idle' | 'working' | 'available' {
-  if (!hasSession) return 'idle'
-  if (hasActiveAssignment) return 'working'
-  return 'available'
-}
-
-/**
  * Real team tracking hook
- * Monitors actual OpenClaw agent activity
+ * Reads from real-status.json which is updated by poll-agent-status.js
  */
 export function useTeamTracker(): TeamTrackerHook {
   const [team, setTeam] = useState<TeamMember[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  
-  // Team roster with roles
-  const teamRoster = [
-    { id: 'makima', name: 'Makima', role: 'CEO Orchestrator' },
-    { id: 'reze', name: 'Reze', role: 'Planner' },
-    { id: 'aki', name: 'Aki', role: 'Developer' },
-    { id: 'power', name: 'Power', role: 'Designer' },
-    { id: 'denji', name: 'Denji', role: 'Researcher' },
-    { id: 'kobeni', name: 'Kobeni', role: 'Tester' },
-    { id: 'himeno', name: 'Himeno', role: 'Reviewer' },
-    { id: 'kishibe', name: 'Kishibe', role: 'Archivist' }
-  ]
 
   const fetchTeamStatus = async () => {
     try {
       setIsLoading(true)
       
-      // Get actual OpenClaw session data
-      const sessions = await sessions_list()
+      // Fetch the real status data
+      const response = await fetch('/real-status.json?t=' + Date.now(), {
+        cache: 'no-store'
+      })
       
-      // Get active assignments (non-completed)
-      const activeAssignments = await getActiveAssignments()
-      
-      // Use real status data for assignments
-      const agentAssignmentCount: Record<string, number> = {}
-      
-      try {
-        const response = await fetch('/real-status.json')
-        if (response.ok) {
-          const realStatus = await response.json()
-          Object.keys(realStatus).forEach(agentId => {
-            const agent = realStatus[agentId]
-            if (agent.status === 'available' || agent.currentTask) {
-              agentAssignmentCount[agentId] = 1
-            }
-          })
-        }
-      } catch {
-        // Ignore errors - use empty assignments
+      if (!response.ok) {
+        throw new Error(`Failed to fetch status: ${response.status}`)
       }
       
+      const statusData: StatusData = await response.json()
+      
       // Map team roster with real status
-      const teamStatus = teamRoster.map(member => {
-        // Check if agent has active sessions
-        const agentSessions = sessions.filter(session => 
-          session.agentId === member.id || 
-          session.sessionKey.toLowerCase().includes(member.id.toLowerCase())
-        )
-        
-        const hasSession = agentSessions.length > 0
-        const hasActiveAssignment = agentAssignmentCount[member.id] > 0
-        const lastActivity = hasSession ? new Date().toISOString() : null
-        const currentTask = hasActiveAssignment 
-          ? activeAssignments.find(a => a.assignee === member.id)?.task 
-          : hasSession ? 'Available (no active task)' : null
+      const teamStatus: TeamMember[] = AGENT_ROSTER.map(member => {
+        const agentStatus = statusData[member.id] || {
+          status: 'idle' as const,
+          lastTask: null,
+          lastActive: null,
+          currentTask: null
+        }
         
         return {
           ...member,
-          status: determineAgentStatus(hasSession, hasActiveAssignment),
-          currentTask: currentTask as string | null,
-          sessionCount: agentSessions.length,
-          lastActive: lastActivity,
-          hasActiveAssignment
+          status: agentStatus.status,
+          currentTask: agentStatus.currentTask,
+          lastTask: agentStatus.lastTask,
+          lastActive: agentStatus.lastActive
         }
       })
       
@@ -158,6 +86,15 @@ export function useTeamTracker(): TeamTrackerHook {
     } catch (err) {
       setError('Failed to fetch team status')
       console.error('Team tracker error:', err)
+      
+      // Fallback to idle status for all agents
+      setTeam(AGENT_ROSTER.map(member => ({
+        ...member,
+        status: 'idle' as const,
+        currentTask: null,
+        lastTask: null,
+        lastActive: null
+      })))
     } finally {
       setIsLoading(false)
     }

@@ -1,1 +1,252 @@
-[]
+[
+  {
+    "id": "STORY-002",
+    "title": "Tickets Tab Enhancement",
+    "description": "Enhance the Tickets tab to provide comprehensive ticket management with filtering capabilities, including complete ticket lists (including archived/completed), relevant agent information, and filter controls.",
+    "type": "feature",
+    "priority": "high",
+    "status": "in-progress",
+    "assignee": "reze",
+    "createdAt": "2026-03-05T16:45:00Z",
+    "updatedAt": "2026-03-05T23:12:57.238Z",
+    "tickets": [
+      {
+        "id": "STORY-002-001",
+        "title": "Create data sync script",
+        "description": "Create script to parse COMPANY_ROSTER.md JSON and generate stories.json and tickets.json files for dashboard consumption.",
+        "assignee": "aki",
+        "status": "done",
+        "priority": "critical",
+        "storyId": "STORY-002",
+        "sprint": 1,
+        "estimate": "1h",
+        "dependencies": [],
+        "completedAt": "2026-03-05T17:00:00Z",
+        "completedBy": "aki"
+      },
+      {
+        "id": "STORY-002-002",
+        "title": "Create archived tickets data source",
+        "description": "Define schema and create data source for archived tickets with completion metadata.",
+        "assignee": "aki",
+        "status": "done",
+        "priority": "high",
+        "storyId": "STORY-002",
+        "sprint": 1,
+        "estimate": "30m",
+        "dependencies": [
+          "STORY-002-001"
+        ],
+        "completedAt": "2026-03-05T17:30:00Z",
+        "completedBy": "aki"
+      },
+      {
+        "id": "STORY-002-003",
+        "title": "Create custom hooks for ticket data",
+        "description": "Implement React hooks for ticket data fetching (useTickets), filtering (useTicketFilters), and archived tickets (useArchivedTickets).",
+        "assignee": "aki",
+        "status": "done",
+        "priority": "high",
+        "storyId": "STORY-002",
+        "sprint": 1,
+        "estimate": "1h",
+        "dependencies": [
+          "STORY-002-001",
+          "STORY-002-002"
+        ],
+        "completedAt": "2026-03-05T18:00:00Z",
+        "completedBy": "aki"
+      },
+      {
+        "id": "STORY-002-004",
+        "title": "Design filter controls component",
+        "description": "Create responsive filter controls with status multi-select, agent dropdown, search input, and archive toggle.",
+        "assignee": "power",
+        "status": "done",
+        "priority": "high",
+        "storyId": "STORY-002",
+        "sprint": 2,
+        "estimate": "1h",
+        "dependencies": [],
+        "completedAt": "2026-03-05T18:30:00Z",
+        "completedBy": "power"
+      },
+      {
+        "id": "STORY-002-005",
+        "title": "Enhance TaskCard component",
+        "description": "Improve TaskCard to show assignee role/specialization, story context, and archived/completed visual indicators.",
+        "assignee": "power",
+        "status": "done",
+        "priority": "high",
+        "storyId": "STORY-002",
+        "sprint": 2,
+        "estimate": "45m",
+        "dependencies": [],
+        "completedAt": "2026-03-05T18:45:00Z",
+        "completedBy": "power"
+      },
+      {
+        "id": "STORY-002-006",
+        "title": "Create TicketStats overview component",
+        "description": "Build stats overview showing status distribution, agent workload, and active vs archived count.",
+        "assignee": "power",
+        "status": "done",
+        "priority": "medium",
+        "storyId": "STORY-002",
+        "sprint": 2,
+        "estimate": "1h",
+        "dependencies": [
+          "STORY-002-003"
+        ],
+        "completedAt": "2026-03-05T19:00:00Z",
+        "completedBy": "power"
+      },
+      {
+        "id": "STORY-002-007",
+        "title": "Implement status filtering",
+        "description": "Add multi-select status filter with URL state synchronization.",
+        "assignee": "aki",
+        "status": "done",
+        "priority": "critical",
+        "storyId": "STORY-002",
+        "sprint": 3,
+        "estimate": "45m",
+        "dependencies": [
+          "STORY-002-003",
+          "STORY-002-004"
+        ],
+        "completedAt": "2026-03-05T21:15:00Z",
+        "completedBy": "aki"
+      },
+      {
+        "id": "STORY-002-008",
+        "title": "Implement agent filtering",
+        "description": "Add agent filter dropdown with status indicators and cross-reference with live agent status.",
+        "assignee": "aki",
+        "status": "done",
+        "priority": "critical",
+        "storyId": "STORY-002",
+        "sprint": 3,
+        "estimate": "45m",
+        "dependencies": [
+          "STORY-002-007"
+        ],
+        "completedAt": "2026-03-05T21:15:00Z",
+        "completedBy": "aki"
+      },
+      {
+        "id": "STORY-002-009",
+        "title": "Implement search functionality",
+        "description": "Add debounced search across ticket title and description with text highlighting.",
+        "assignee": "aki",
+        "status": "done",
+        "priority": "high",
+        "storyId": "STORY-002",
+        "sprint": 3,
+        "estimate": "30m",
+        "dependencies": [
+          "STORY-002-007"
+        ],
+        "completedAt": "2026-03-05T21:15:00Z",
+        "completedBy": "aki"
+      },
+      {
+        "id": "STORY-002-010",
+        "title": "Implement archive toggle",
+        "description": "Add toggle to show/hide archived tickets with visual distinction.",
+        "assignee": "aki",
+        "status": "done",
+        "priority": "high",
+        "storyId": "STORY-002",
+        "sprint": 3,
+        "estimate": "30m",
+        "dependencies": [
+          "STORY-002-002"
+        ],
+        "completedAt": "2026-03-05T21:25:00Z",
+        "completedBy": "aki"
+      },
+      {
+        "id": "STORY-002-011",
+        "title": "Unit tests for filter hooks",
+        "description": "Write comprehensive unit tests for all filter-related hooks including edge cases.",
+        "assignee": "kobeni",
+        "status": "todo",
+        "priority": "high",
+        "storyId": "STORY-002",
+        "sprint": 4,
+        "estimate": "1h",
+        "dependencies": [
+          "STORY-002-003",
+          "STORY-002-007",
+          "STORY-002-008",
+          "STORY-002-009",
+          "STORY-002-010"
+        ]
+      },
+      {
+        "id": "STORY-002-012",
+        "title": "E2E tests for tickets tab",
+        "description": "Write Playwright E2E tests for complete filter workflow, search, mobile responsiveness.",
+        "assignee": "kobeni",
+        "status": "todo",
+        "priority": "high",
+        "storyId": "STORY-002",
+        "sprint": 4,
+        "estimate": "1h",
+        "dependencies": [
+          "STORY-002-007",
+          "STORY-002-008",
+          "STORY-002-009",
+          "STORY-002-010"
+        ]
+      },
+      {
+        "id": "STORY-002-013",
+        "title": "Accessibility audit",
+        "description": "Ensure accessibility compliance for all new components (keyboard nav, screen reader, contrast).",
+        "assignee": "kobeni",
+        "status": "todo",
+        "priority": "medium",
+        "storyId": "STORY-002",
+        "sprint": 4,
+        "estimate": "1h",
+        "dependencies": [
+          "STORY-002-004",
+          "STORY-002-005"
+        ]
+      },
+      {
+        "id": "STORY-002-014",
+        "title": "Update documentation",
+        "description": "Document all new components, hooks, data flows, and filter usage examples.",
+        "assignee": "denji",
+        "status": "todo",
+        "priority": "medium",
+        "storyId": "STORY-002",
+        "sprint": 5,
+        "estimate": "45m",
+        "dependencies": [
+          "STORY-002-011",
+          "STORY-002-012"
+        ]
+      },
+      {
+        "id": "STORY-002-015",
+        "title": "Code review preparation",
+        "description": "Prepare code for final review with performance metrics, bundle size check, and self-review checklist.",
+        "assignee": "himeno",
+        "status": "todo",
+        "priority": "medium",
+        "storyId": "STORY-002",
+        "sprint": 5,
+        "estimate": "30m",
+        "dependencies": [
+          "STORY-002-011",
+          "STORY-002-012",
+          "STORY-002-013"
+        ]
+      }
+    ]
+  }
+]

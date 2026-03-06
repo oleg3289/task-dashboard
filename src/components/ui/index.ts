@@ -23,6 +23,12 @@ export * from './task-status-tracker'
 export * from './workload-distribution'
 export * from './task-assignment-panel'
 
+// Ticket components
+export * from './ticket-card'
+export * from './ticket-detail-modal'
+export * from './filter-bar'
+export * from './tickets-tab'
+
 // Type re-exports for convenience
 export type { 
   Task, 
