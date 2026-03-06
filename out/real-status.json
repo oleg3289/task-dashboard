@@ -1,6 +1,6 @@
 {
   "makima": {
-    "status": "available",
+    "status": "idle",
     "lastTask": "Company coordination",
     "lastActive": "2026-03-05T18:23:00.877Z",
     "currentTask": null
@@ -12,13 +12,13 @@
     "currentTask": null
   },
   "aki": {
-    "status": "available",
+    "status": "idle",
     "lastTask": "Fix Chrome DevTools console warnings in dashboard project",
     "lastActive": "2026-03-05T18:23:00.877Z",
     "currentTask": null
   },
   "power": {
-    "status": "available",
+    "status": "idle",
     "lastTask": "Design mobile-responsive improvements",
     "lastActive": "2026-03-05T18:15:33.382Z",
     "currentTask": null

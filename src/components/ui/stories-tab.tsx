@@ -82,7 +82,7 @@ export function StoriesTab({
   // Calculate progress for each story
   const getStoryProgress = (story: Story) => {
     const total = story.tickets?.length || 0
-    if (total === 0) return { total: 0, done: 0, percent: 0 }
+    if (total === 0) return { total: 0, done: 0, inProgress: 0, review: 0, todo: 0, backlog: 0, percent: 0 }
     
     const done = story.tickets.filter(t => t.status === 'done').length
     const inProgress = story.tickets.filter(t => t.status === 'in-progress').length

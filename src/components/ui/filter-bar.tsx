@@ -124,7 +124,7 @@ function StatusFilter({ selectedStatuses, onChange, showArchived, onArchivedTogg
           <FilterChip
             key={status.value}
             label={status.label}
-            selected={status.value === 'archived' ? showArchived : selectedStatuses.includes(status.value)}
+            selected={status.value === 'archived' ? !!showArchived : selectedStatuses.includes(status.value)}
             onClick={() => toggleStatus(status.value)}
             colorClass={statusColors[status.value]}
           />
@@ -407,7 +407,7 @@ export function FilterBar({
             <FilterChip
               key={status.value}
               label={status.label}
-              selected={status.value === 'archived' ? showArchived : selectedStatuses.includes(status.value)}
+              selected={status.value === 'archived' ? !!showArchived : selectedStatuses.includes(status.value)}
               onClick={() => {
                 if (status.value === 'archived') {
                   onArchivedToggle?.()
