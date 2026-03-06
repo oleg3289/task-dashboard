@@ -7,7 +7,7 @@ export interface TeamMember {
   id: string
   name: string 
   role: string
-  status: 'active' | 'idle' | 'working' | 'available' | 'error'
+  status: 'working' | 'available' | 'idle' | 'error'
   currentTask: string | null
   lastTask: string | null
   lastActive: string | null
@@ -33,7 +33,7 @@ const AGENT_ROSTER = [
 
 interface StatusData {
   [agentId: string]: {
-    status: 'active' | 'idle' | 'working' | 'available'
+    status: 'working' | 'available' | 'idle'
     lastTask: string | null
     lastActive: string | null
     currentTask: string | null

@@ -82,7 +82,7 @@ export default function TabbedDashboard() {
 
   // Agent status counts
   const workingAgents = team.filter(m => m.status === 'working').length
-  const availableAgents = team.filter(m => m.status === 'available' || m.status === 'active').length
+  const availableAgents = team.filter(m => m.status === 'available').length
   const idleAgents = team.filter(m => m.status === 'idle').length
 
   return (

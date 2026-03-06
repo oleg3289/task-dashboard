@@ -1,8 +1,8 @@
 {
   "makima": {
-    "status": "available",
+    "status": "idle",
     "lastTask": "Company coordination",
-    "lastActive": "2026-03-06T15:31:49.891Z",
+    "lastActive": "2026-03-06T15:55:48.772Z",
     "currentTask": null
   },
   "reze": {
@@ -12,9 +12,9 @@
     "currentTask": null
   },
   "aki": {
-    "status": "available",
+    "status": "idle",
     "lastTask": "Test tracking integration",
-    "lastActive": "2026-03-06T15:47:17.007Z",
+    "lastActive": "2026-03-06T15:55:48.772Z",
     "currentTask": null
   },
   "power": {
@@ -24,9 +24,9 @@
     "currentTask": null
   },
   "denji": {
-    "status": "available",
-    "lastTask": "Research best practices for real-time dashboard updates",
-    "lastActive": "2026-03-06T15:52:08.210Z",
+    "status": "idle",
+    "lastTask": "Research WebSocket vs Server-Sent Events for real-time dashboards",
+    "lastActive": "2026-03-06T17:26:05.779Z",
     "currentTask": null
   },
   "kobeni": {

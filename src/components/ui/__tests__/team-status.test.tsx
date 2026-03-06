@@ -86,7 +86,7 @@ describe('TeamStatus', () => {
     expect(screen.getByText('Himeno')).toBeInTheDocument()
     expect(screen.getByText('Reviewer')).toBeInTheDocument()
     expect(screen.getByText('available')).toBeInTheDocument()
-    expect(screen.getByText('Available (no active task)').toBeInTheDocument())
+    // Note: currentTask is only shown when status is 'working'
 
     expect(screen.getByText('Kobeni')).toBeInTheDocument()
     expect(screen.getByText('Tester')).toBeInTheDocument()

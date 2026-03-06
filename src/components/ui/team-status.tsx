@@ -11,8 +11,7 @@ interface TeamStatusProps {
 function getStatusColor(status: TeamMember['status']) {
   switch (status) {
     case 'working': return 'bg-blue-500'
-    case 'active': return 'bg-green-500'
-    case 'available': return 'bg-emerald-400'
+    case 'available': return 'bg-green-500'
     case 'idle': return 'bg-gray-400'
     case 'error': return 'bg-red-500'
     default: return 'bg-gray-400'
@@ -22,7 +21,6 @@ function getStatusColor(status: TeamMember['status']) {
 function getStatusBadge(status: TeamMember['status']) {
   switch (status) {
     case 'working': return 'default'
-    case 'active': return 'default'
     case 'available': return 'secondary'
     case 'idle': return 'outline'
     case 'error': return 'destructive'
@@ -53,8 +51,7 @@ export function TeamStatus({ compact = false }: TeamStatusProps) {
   // Summary stats
   const working = team.filter(m => m.status === 'working').length
   const available = team.filter(m => m.status === 'available').length
-  const active = team.filter(m => m.status === 'active').length
-  const idle = team.filter(m => m.status === 'idle').length
+  const offline = team.filter(m => m.status === 'idle').length
 
   if (isLoading) {
     return (
@@ -114,15 +111,11 @@ export function TeamStatus({ compact = false }: TeamStatusProps) {
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded-full bg-green-500"></div>
-            <span className="text-sm"><strong>{active}</strong> Active</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-emerald-400"></div>
             <span className="text-sm"><strong>{available}</strong> Available</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded-full bg-gray-400"></div>
-            <span className="text-sm"><strong>{idle}</strong> Idle</span>
+            <span className="text-sm"><strong>{offline}</strong> Offline</span>
           </div>
         </CardContent>
       </Card>
