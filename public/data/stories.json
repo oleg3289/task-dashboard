@@ -210,7 +210,7 @@
         "title": "Accessibility audit",
         "description": "Ensure accessibility compliance for all new components (keyboard nav, screen reader, contrast).",
         "assignee": "kobeni",
-        "status": "todo",
+        "status": "done",
         "priority": "medium",
         "storyId": "STORY-002",
         "sprint": 4,
@@ -218,7 +218,11 @@
         "dependencies": [
           "STORY-002-004",
           "STORY-002-005"
-        ]
+        ],
+        "updatedAt": "2026-03-07T01:03:35.258Z",
+        "startedAt": "2026-03-07T01:03:27.339Z",
+        "completedAt": "2026-03-07T01:03:35.258Z",
+        "completedBy": "kobeni"
       },
       {
         "id": "STORY-002-014",

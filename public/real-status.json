@@ -13,8 +13,8 @@
   },
   "aki": {
     "status": "available",
-    "lastTask": "Test tracking integration",
-    "lastActive": "2026-03-06T23:11:30.028Z",
+    "lastTask": "Test ticket sync STORY-999-001",
+    "lastActive": "2026-03-07T01:03:22.089Z",
     "currentTask": null
   },
   "power": {
@@ -31,8 +31,8 @@
   },
   "kobeni": {
     "status": "available",
-    "lastTask": "Write unit tests for filter hooks (STORY-002-011) and E2E tests for tickets tab (STORY-002-012)",
-    "lastActive": "2026-03-07T00:53:36.511Z",
+    "lastTask": "Accessibility audit STORY-002-013",
+    "lastActive": "2026-03-07T01:03:35.257Z",
     "currentTask": null
   },
   "himeno": {
