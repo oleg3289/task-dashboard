@@ -30,9 +30,9 @@
     "currentTask": null
   },
   "kobeni": {
-    "status": "idle",
-    "lastTask": "Runtime error investigation",
-    "lastActive": "2026-03-04T16:16:00Z",
+    "status": "available",
+    "lastTask": "Write unit tests for filter hooks (STORY-002-011) and E2E tests for tickets tab (STORY-002-012)",
+    "lastActive": "2026-03-07T00:53:36.511Z",
     "currentTask": null
   },
   "himeno": {
