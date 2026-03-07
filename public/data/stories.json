@@ -171,7 +171,7 @@
         "title": "Unit tests for filter hooks",
         "description": "Write comprehensive unit tests for all filter-related hooks including edge cases.",
         "assignee": "kobeni",
-        "status": "todo",
+        "status": "done",
         "priority": "high",
         "storyId": "STORY-002",
         "sprint": 4,
@@ -182,14 +182,16 @@
           "STORY-002-008",
           "STORY-002-009",
           "STORY-002-010"
-        ]
+        ],
+        "completedAt": "2026-03-07T00:55:00Z",
+        "completedBy": "kobeni"
       },
       {
         "id": "STORY-002-012",
         "title": "E2E tests for tickets tab",
         "description": "Write Playwright E2E tests for complete filter workflow, search, mobile responsiveness.",
         "assignee": "kobeni",
-        "status": "todo",
+        "status": "done",
         "priority": "high",
         "storyId": "STORY-002",
         "sprint": 4,
@@ -199,7 +201,9 @@
           "STORY-002-008",
           "STORY-002-009",
           "STORY-002-010"
-        ]
+        ],
+        "completedAt": "2026-03-07T00:55:00Z",
+        "completedBy": "kobeni"
       },
       {
         "id": "STORY-002-013",
