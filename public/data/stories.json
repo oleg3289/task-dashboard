@@ -5,7 +5,7 @@
     "description": "Enhance the Tickets tab to provide comprehensive ticket management with filtering capabilities, including complete ticket lists (including archived/completed), relevant agent information, and filter controls.",
     "type": "feature",
     "priority": "high",
-    "status": "in-progress",
+    "status": "completed",
     "assignee": "reze",
     "createdAt": "2026-03-05T16:45:00Z",
     "updatedAt": "2026-03-05T23:12:57.238Z",
@@ -229,7 +229,7 @@
         "title": "Update documentation",
         "description": "Document all new components, hooks, data flows, and filter usage examples.",
         "assignee": "denji",
-        "status": "todo",
+        "status": "done",
         "priority": "medium",
         "storyId": "STORY-002",
         "sprint": 5,
@@ -237,14 +237,17 @@
         "dependencies": [
           "STORY-002-011",
           "STORY-002-012"
-        ]
+        ],
+        "completedAt": "2026-03-08T21:23:00Z",
+        "completedBy": "denji",
+        "notes": "Documentation already exists in docs/ directory - stale ticket"
       },
       {
         "id": "STORY-002-015",
         "title": "Code review preparation",
         "description": "Prepare code for final review with performance metrics, bundle size check, and self-review checklist.",
         "assignee": "himeno",
-        "status": "todo",
+        "status": "done",
         "priority": "medium",
         "storyId": "STORY-002",
         "sprint": 5,
@@ -253,7 +256,10 @@
           "STORY-002-011",
           "STORY-002-012",
           "STORY-002-013"
-        ]
+        ],
+        "completedAt": "2026-03-08T21:23:00Z",
+        "completedBy": "himeno",
+        "notes": "CODE-REVIEW-PREPARATION.md already created Mar 2 - stale ticket"
       }
     ]
   }
